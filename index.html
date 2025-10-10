@@ -62,7 +62,7 @@
       padding-left: 10px;
     }
     li {
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     footer {
       text-align: center;
@@ -71,35 +71,18 @@
       font-size: 0.9rem;
     }
 
-    /* Mobile responsive styles */
     @media (max-width: 768px) {
-      h1 {
-        font-size: 1.6rem;
-      }
-      h2 {
-        font-size: 1.15rem;
-      }
-      .wrap {
-        padding: 15px;
-      }
-      .card {
-        padding: 16px;
-      }
+      h1 { font-size: 1.6rem; }
+      h2 { font-size: 1.15rem; }
+      .wrap { padding: 15px; }
+      .card { padding: 16px; }
     }
 
     @media (max-width: 480px) {
-      body {
-        font-size: 0.95rem;
-      }
-      header {
-        margin: 25px 0 20px;
-      }
-      h1 {
-        font-size: 1.4rem;
-      }
-      .card {
-        padding: 14px;
-      }
+      body { font-size: 0.95rem; }
+      header { margin: 25px 0 20px; }
+      h1 { font-size: 1.4rem; }
+      .card { padding: 14px; }
     }
   </style>
 </head>
@@ -129,11 +112,11 @@
     <div class="card">
       <h2>3. Common use cases</h2>
       <ul>
-        <li><strong>Anomaly detection</strong> — finding patterns in network traffic that differ from the baseline.</li>
-        <li><strong>Intrusion detection systems (IDS)</strong> — using probability models to reduce false positives.</li>
-        <li><strong>Intrusion prevention systems (IPS)</strong> — extending IDS by automatically blocking or mitigating threats in real time. Statistical models define normal traffic baselines, detect anomalies through deviations, and use probabilistic thresholds to trigger actions. Modern IPS combine these approaches with machine learning and behavioral analysis to balance sensitivity and false positive rates.</li>
-        <li><strong>Risk scoring</strong> — assigning statistical likelihoods to potential threats or vulnerabilities.</li>
-        <li><strong>Threat intelligence</strong> — analysing large datasets to reveal relationships among attacks.</li>
+        <li><strong>Anomaly detection</strong> — Statistical models learn the normal behaviour of users, systems, or networks. When variables like traffic volume or login rate deviate significantly from expected ranges, alerts are raised using techniques like z-scores, clustering, and density estimation.</li>
+        <li><strong>Intrusion detection systems (IDS)</strong> — IDS use probability-based filters and hypothesis testing to distinguish between harmless and malicious activity. Statistical calibration allows the system to adapt to changing baselines over time and reduce false positives.</li>
+        <li><strong>Intrusion prevention systems (IPS)</strong> — Extending IDS, IPS not only detect but also prevent attacks in real time. Statistical models define normal traffic baselines, identify anomalies through probabilistic thresholds, and trigger automated mitigation. Modern IPS blend statistics with machine learning and behavioural analysis to balance sensitivity and precision, minimizing false positives.</li>
+        <li><strong>Risk scoring and prioritization</strong> — Statistical scoring models estimate the probability and potential impact of threats or vulnerabilities, helping security teams focus on high-risk events first and allocate resources efficiently.</li>
+        <li><strong>Threat intelligence analysis</strong> — Statistical correlations among IPs, malware signatures, or timestamps reveal coordinated campaigns. Network graph statistics and temporal analysis uncover hidden links between attacks that may seem unrelated.</li>
       </ul>
     </div>
 
@@ -156,10 +139,6 @@
         <li>Building transparent and explainable models for decision support.</li>
       </ul>
     </div>
-
-    <footer>
-      <p>Static site example — demonstrating how statistics enhance cybersecurity decisions.</p>
-    </footer>
   </div>
 </body>
 </html>
