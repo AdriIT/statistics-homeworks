@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Statistics in Cybersecurity — Use Cases & Innovations</title>
+  <meta name="description" content="A compact but comprehensive static overview of how statistical methods power modern cybersecurity — examples, workflows, and innovative directions." />
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#9aa6b2; --accent:#7dd3fc; --glass: rgba(255,255,255,0.04);
+      --radius:14px; --maxw:1100px; --glass-2: rgba(255,255,255,0.02);
+      font-synthesis: none;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(180deg,#071022 0%, #081428 40%, #071833 100%); color:#e6eef6}
+    .wrap{max-width:var(--maxw);margin:32px auto;padding:28px}
+    header{display:flex;gap:18px;align-items:center;margin-bottom:20px}
+    .logo{width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#60a5fa);display:flex;align-items:center;justify-content:center;color:#042028;font-weight:700;box-shadow:0 6px 24px rgba(7,16,34,.6)}
+    h1{margin:0;font-size:1.5rem;line-height:1.05}
+    p.lead{color:var(--muted);margin:6px 0 0}
+
+    nav{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
+    .chip{background:var(--glass);padding:8px 12px;border-radius:999px;font-size:13px;color:var(--accent);border:1px solid rgba(125,211,252,0.08)}
+
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:20px;margin-top:20px}
+    @media (max-width:880px){.grid{grid-template-columns:1fr}}
+
+    .card{background:linear-gradient(180deg,var(--card), #071226);border-radius:var(--radius);padding:18px;box-shadow:0 10px 30px rgba(2,6,23,.6);border:1px solid var(--glass-2)}
+    .hero{display:flex;gap:18px;align-items:flex-start}
+    .hero .left{flex:1}
+    .statline{display:flex;gap:12px;margin-top:12px}
+    .stat{background:rgba(255,255,255,0.03);padding:10px;border-radius:10px;min-width:100px;text-align:center}
+    .stat strong{display:block;font-size:1.1rem}
+    .accent{color:var(--accent);font-weight:600}
+
+    section h2{margin:6px 0 12px}
+    ul{margin:0 0 12px 20px}
+
+    /* use-case cards */
+    .usecases{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    @media (max-width:760px){.usecases{grid-template-columns:1fr}}
+    .usecase{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border:1px solid rgba(255,255,255,0.02)}
+    .tag{display:inline-block;padding:6px 8px;border-radius:8px;font-size:12px;background:rgba(125,211,252,0.06);color:var(--accent);}
+
+    /* interactive accordion */
+    .accordion{margin-top:14px}
+    .acc-item{border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.02);margin-bottom:8px}
+    .acc-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+    .acc-body{padding:12px 14px;border-top:1px solid rgba(255,255,255,0.02);display:none;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+
+    /* small code block */
+    pre{background:#041226;padding:12px;border-radius:10px;color:#bfe9ff;overflow:auto}
+
+    .chart{height:120px;border-radius:10px;background:linear-gradient(90deg, rgba(125,211,252,0.06), rgba(96,165,250,0.02));display:flex;align-items:flex-end;gap:6px;padding:12px}
+    .bar{flex:1;height:40%;border-radius:6px;background:linear-gradient(180deg,var(--accent),#60a5fa);display:flex;align-items:flex-end;justify-content:center;color:#052; font-weight:700}
+
+    /* small helpers */
+    .muted{color:var(--muted)}
+    a.inline{color:var(--accent);text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">Stat</div>
+      <div>
+        <h1>Statistics in Cybersecurity — Core Uses & Emerging Directions</h1>
+        <p class="lead">Concise, practically oriented guide to how statistical thinking, modelling and measurement underpin detection, risk scoring and resilient system design.</p>
+        <nav>
+          <span class="chip">Anomaly Detection</span>
+          <span class="chip">Threat Intelligence</span>
+          <span class="chip">Privacy</span>
+          <span class="chip">ML Ops & Data Quality</span>
+        </nav>
+      </div>
+    </header>
+
+    <div class="grid">
+      <main>
+        <div class="card hero">
+          <div class="left">
+            <h2>Why statistics matter for security</h2>
+            <p class="muted">Security is fundamentally about uncertainty: what is normal, what is risky, and how to measure improvement. Statistical methods provide the language and tools to quantify anomalies, estimate likelihoods, and make defensible decisions under noise and adversarial pressure.</p>
+
+            <div class="statline" aria-hidden>
+              <div class="stat"><small class="muted">False positive cost</small><strong>measured</strong><span class="muted">(ROC, AUC)</span></div>
+              <div class="stat"><small class="muted">Threat prioritization</small><strong>scored</strong><span class="muted">(risk models)</span></div>
+              <div class="stat"><small class="muted">Detection latency</small><strong>minimized</strong><span class="muted">(time-series)</span></div>
+            </div>
+
+            <h3 style="margin-top:16px">Key statistical building blocks</h3>
+            <ul>
+              <li><strong>Descriptive statistics</strong> — summarise behaviors, baselines and variability.</li>
+              <li><strong>Hypothesis testing</strong> — decide if an observed spike is significant or random.</li>
+              <li><strong>Time-series & change point analysis</strong> — detect shifts in traffic or behavior.</li>
+              <li><strong>Probabilistic modelling</strong> — model uncertainty in attack likelihoods and evidence.</li>
+              <li><strong>Bayesian inference</strong> — combine signals and update beliefs under uncertainty.</li>
+            </ul>
+
+            <h3>Representative use cases</h3>
+            <div class="usecases">
+              <div class="usecase">
+                <div class="tag">Anomaly Detection</div>
+                <p class="muted">Statistical thresholds, density estimation, and models like Gaussian Mixture Models / KDE detect deviations in network flows and user behaviour.</p>
+              </div>
+              <div class="usecase">
+                <div class="tag">Intrusion Detection</div>
+                <p class="muted">Sequence models + survival analysis help find malicious sessions and estimate time-to-compromise.</p>
+              </div>
+              <div class="usecase">
+                <div class="tag">Risk Scoring</div>
+                <p class="muted">Regression and calibrations produce interpretable scores used for prioritizing alerts and patching.</p>
+              </div>
+              <div class="usecase">
+                <div class="tag">Threat Intelligence</div>
+                <p class="muted">Graph statistics and community detection reveal campaigns; probabilistic attribution quantifies confidence.</p>
+              </div>
+            </div>
+
+            <div class="accordion">
+              <div class="acc-item">
+                <div class="acc-head">Anomaly detection: beyond thresholds <span class="muted">(+)</span></div>
+                <div class="acc-body">
+                  <p class="muted">Classic thresholding fails under heavy-tailed traffic and non-stationarity. Robust options include:<ul><li>Seasonal decomposition + z-score on residuals</li><li>KDE / Isolation Forests for density-based outliers</li><li>Online change point detection (CUSUM, Bayesian CP)</li></ul></p>
+                </div>
+              </div>
+
+              <div class="acc-item">
+                <div class="acc-head">Adversarial noise & model robustness <span class="muted">(+)</span></div>
+                <div class="acc-body">
+                  <p class="muted">Attackers try to manipulate statistical signals. Defences: robust statistics (median, trimmed means), differential privacy to reduce overfitting to training data, and distributionally-robust optimisation.</p>
+                </div>
+              </div>
+
+              <div class="acc-item">
+                <div class="acc-head">Causal inference for root cause <span class="muted">(+)</span></div>
+                <div class="acc-body">
+                  <p class="muted">Correlation isn't causation. Use causal discovery and counterfactuals to reduce false leads when multiple alerts co-occur (e.g. feature-flag rollouts vs real attacks).</p>
+                </div>
+              </div>
+            </div>
+
+            <h3 style="margin-top:14px">Practical pattern: "Measure → Model → Monitor"</h3>
+            <ol class="muted">
+              <li>Define measurable signals (metrics, features).</li>
+              <li>Fit statistical models & quantify uncertainty.</li>
+              <li>Set calibrated alerting thresholds and continuously evaluate calibration.</li>
+            </ol>
+
+            <h3>Small example: p-value pitfalls</h3>
+            <pre><code>/* naive test */
+if (p &lt; 0.05) alert();
+/* instead: report effect size, confidence interval and expected cost */
+</code></pre>
+
+            <p class="muted">Always combine statistical evidence with domain context and cost-aware decision rules.</p>
+          </div>
+          <aside style="width:300px">
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div class="card">
+                <h4 style="margin:0">Quick roadmap</h4>
+                <p class="muted">From baseline metrics to online Bayesian updates: a short path for teams to build statistically-driven security.</p>
+                <ul class="muted">
+                  <li>Baseline & monitoring</li>
+                  <li>Model & simulate attacks</li>
+                  <li>Evaluate & harden</li>
+                </ul>
+              </div>
+
+              <div class="card">
+                <h4 style="margin:0">Innovative directions</h4>
+                <ul class="muted">
+                  <li>Privacy-preserving analytics (federated stats)</li>
+                  <li>Graph-based causal detection</li>
+                  <li>Adversarially robust risk scoring</li>
+                </ul>
+              </div>
+
+              <div class="card">
+                <h4 style="margin:0">Illustrative metric</h4>
+                <div class="chart" aria-hidden>
+                  <div class="bar" style="height:46%">46</div>
+                  <div class="bar" style="height:66%">66</div>
+                  <div class="bar" style="height:34%">34</div>
+                  <div class="bar" style="height:82%">82</div>
+                </div>
+                <p class="muted" style="margin-top:8px">Simulated detection coverage (%) across pipelines</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <section class="card" style="margin-top:18px">
+          <h2>Data & tooling</h2>
+          <p class="muted">Useful statistical tools and workflows used by practitioners:</p>
+          <ul class="muted">
+            <li>Exploratory Data Analysis: summary statistics, violin plots, robust moments</li>
+            <li>Time-series packages: online libraries for streaming CUSUM / ADWIN</li>
+            <li>Bayesian tools: PyMC, Stan for modelling uncertainty</li>
+            <li>Graph & network analysis: community detection, edge-weight statistics</li>
+            <li>Evaluation: ROC/PR, calibration curves, cost-sensitive scoring</li>
+          </ul>
+
+          <h3>Governance & measurement</h3>
+          <p class="muted">Instrumentation and metric governance are as important as fancy models — if you measure garbage, statistics will amplify your mistakes.</p>
+        </section>
+
+      </main>
+
+      <aside>
+        <div class="card">
+          <h3>Quick glossary</h3>
+          <p class="muted"><strong>AUC</strong> — Area under ROC curve. <br><strong>KDE</strong> — Kernel Density Estimation. <br><strong>CP</strong> — Change point.</p>
+          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0" />
+          <h4>Checklist for a stats-driven pipeline</h4>
+          <ul class="muted">
+            <li>Define metrics & SLOs</li>
+            <li>Collect labeled & unlabeled data</li>
+            <li>Calibrate models</li>
+            <li>Monitor drift & retrain</li>
+          </ul>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h4>Deployment snippet</h4>
+          <pre><code>git init
+# add files
+git add .
+git commit -m "site"
+git push origin main
+# enable GitHub Pages from repo settings
+</code></pre>
+          <p class="muted">Drop this in a repo named <code>yourname.github.io</code> to host on GitHub Pages.</p>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h4>Want it in Italian?</h4>
+          <p class="muted">I can translate or expand any section — or create a multi-page site with examples and downloadable notebooks.</p>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      <div class="card">
+        <p class="muted" style="margin:10px 0 0">This static page is made for quick study: adapt examples for your threat model and remember to evaluate under adversarial conditions.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.querySelectorAll('.acc-head').forEach(h=>{
+      h.addEventListener('click', ()=>{
+        const body = h.nextElementSibling;
+        const open = body.style.display === 'block';
+        // close all
+        document.querySelectorAll('.acc-body').forEach(b=>b.style.display='none');
+        if(!open) body.style.display='block';
+      })
+    });
+  </script>
+</body>
+</html>
