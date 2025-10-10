@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Statistics in Cybersecurity — Key Applications</title>
+  <meta name="description" content="An accessible overview of how statistical methods support cybersecurity through detection, prediction and decision-making." />
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #9aa6b2;
+      --accent: #7dd3fc;
+      --radius: 14px;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: #e6eef6;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin: 40px 0 30px;
+      padding: 0 10px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      color: var(--accent);
+    }
+    p.lead {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-top: 8px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+    h2 {
+      color: var(--accent);
+      margin-top: 0;
+      font-size: 1.3rem;
+    }
+    ul {
+      margin-left: 20px;
+      padding-left: 10px;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    footer {
+      text-align: center;
+      margin: 40px 0 20px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 1.6rem; }
+      h2 { font-size: 1.15rem; }
+      .wrap { padding: 15px; }
+      .card { padding: 16px; }
+    }
+
+    @media (max-width: 480px) {
+      body { font-size: 0.95rem; }
+      header { margin: 25px 0 20px; }
+      h1 { font-size: 1.4rem; }
+      .card { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Statistics in Cybersecurity</h1>
+      <p class="lead">How statistical thinking helps identify threats, understand risk, and improve digital protection.</p>
+    </header>
+
+    <div class="card">
+      <h2>1. Understanding the role of statistics</h2>
+      <p>Cybersecurity deals with uncertainty: detecting intrusions, predicting attacks, and evaluating defences all rely on data. Statistics provides tools to describe normal behaviour, detect unusual patterns, and make reliable decisions when information is incomplete.</p>
+    </div>
+
+    <div class="card">
+      <h2>2. Core statistical methods used</h2>
+      <ul>
+        <li><strong>Descriptive statistics</strong> — summarising network traffic, user behaviour, or log activity.</li>
+        <li><strong>Hypothesis testing</strong> — deciding whether an event is random or suspicious.</li>
+        <li><strong>Time-series analysis</strong> — identifying sudden changes in data over time.</li>
+        <li><strong>Regression and correlation</strong> — linking security events with potential causes.</li>
+        <li><strong>Bayesian reasoning</strong> — updating the probability of an attack as new evidence arrives.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>3. Common use cases</h2>
+      <ul>
+        <li><strong>Anomaly detection</strong> — Statistical models learn the normal behaviour of users, systems, or networks. When variables like traffic volume or login rate deviate significantly from expected ranges, alerts are raised using techniques like z-scores, clustering, and density estimation.</li>
+        <li><strong>Intrusion detection systems (IDS)</strong> — IDS use probability-based filters and hypothesis testing to distinguish between harmless and malicious activity. Statistical calibration allows the system to adapt to changing baselines over time and reduce false positives.</li>
+        <li><strong>Intrusion prevention systems (IPS)</strong> — Extending IDS, IPS not only detect but also prevent attacks in real time. Statistical models define normal traffic baselines, identify anomalies through probabilistic thresholds, and trigger automated mitigation. Modern IPS blend statistics with machine learning and behavioural analysis to balance sensitivity and precision, minimizing false positives.</li>
+        <li><strong>Risk scoring and prioritization</strong> — Statistical scoring models estimate the probability and potential impact of threats or vulnerabilities, helping security teams focus on high-risk events first and allocate resources efficiently.</li>
+        <li><strong>Threat intelligence analysis</strong> — Statistical correlations among IPs, malware signatures, or timestamps reveal coordinated campaigns. Network graph statistics and temporal analysis uncover hidden links between attacks that may seem unrelated.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>4. Benefits of statistical approaches</h2>
+      <ul>
+        <li>Improved accuracy through data-driven thresholds.</li>
+        <li>Better resource allocation based on measurable risk.</li>
+        <li>Ability to detect subtle or emerging attack patterns.</li>
+        <li>Objective evaluation of security tool performance.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>5. Future directions</h2>
+      <ul>
+        <li>Integrating classical statistics with machine learning.</li>
+        <li>Developing real-time adaptive statistical monitoring.</li>
+        <li>Creating privacy-preserving data analysis methods.</li>
+        <li>Building transparent and explainable models for decision support.</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
