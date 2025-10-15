@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interactive Statistics: Dataset & Distribution</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Homework 2 - Dataset e Distribution</title>
 <style>
 :root {
     --bg: #0f1724;
@@ -11,7 +11,7 @@
     --muted: #9aa6b2;
     --accent: #7dd3fc;
     --radius: 14px;
-    --bar-color: #800020;
+    --bar-color: #7dd3fc; /* accent color for bars */
     --number-color: #ffffff;
     --letter-color: #000000;
 }
@@ -20,12 +20,11 @@ body {
     background: var(--bg);
     color: #e6eef6;
     margin:0;
-    padding:0;
+    padding:20px;
 }
 .wrap {
     max-width: 950px;
     margin:0 auto;
-    padding:20px;
 }
 h1,h2,h3,h4 { color: var(--accent); }
 .card {
@@ -50,9 +49,44 @@ th { background: var(--accent); color:#000; }
 .bar-wrap { flex:1; background: rgba(255,255,255,0.05); border-radius:4px; margin:0 8px; }
 .bar-fill { height:18px; border-radius:4px; background: var(--bar-color); }
 .bar-value { width:48px; text-align:right; color: var(--number-color); font-weight:600; }
+
 input[type=number] { width:60px; }
-select, button { margin-left:6px; padding:4px 6px; border-radius:4px; border:none; }
-textarea { width:100%; background:rgba(0,0,0,0.2); color:#fff; padding:0.5rem; border-radius:6px; }
+select, button {
+    margin-left:6px;
+    padding:6px 10px;
+    border-radius:8px;
+    border:none;
+    background: var(--accent);
+    color:#000;
+    font-weight: 600;
+    cursor: pointer;
+}
+button:hover {
+    background: #5bb3f8;
+}
+textarea {
+    width:100%;
+    background:rgba(0,0,0,0.2);
+    color:#fff;
+    padding:0.5rem;
+    border-radius:6px;
+    border:none;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+}
+
+/* Group button controls in the cipher section */
+.button-group {
+    margin-bottom: 1rem;
+}
+
+/* Labels inline with inputs in button groups */
+.button-group label {
+    margin-left: 10px;
+    font-weight: 500;
+    color: var(--muted);
+    user-select:none;
+}
 </style>
 </head>
 <body>
@@ -107,28 +141,39 @@ textarea { width:100%; background:rgba(0,0,0,0.2); color:#fff; padding:0.5rem; b
 <div class="card">
 <h2>5. Letter Distribution & Caesar Cipher</h2>
 <p>Type a text below, compute the letter distribution, apply Caesar cipher, then decode automatically using brute-force and language frequencies.</p>
-<textarea id="text-input" rows="6">Voglio bere il latte e poi guardare il browser in Italia.</textarea>
-<div style="margin-top:0.5rem;">
-<label>Shift: <input type="number" id="shift" value="3" min="0" max="25"></label>
-<button id="encrypt-btn">Encrypt</button>
-<button id="brute-btn">Brute-force Decode</button>
-<select id="lang-select">
-<option value="italian" selected>Italian</option>
-<option value="english">English</option>
-</select>
-<button id="lang-decode">Decode using Language</button>
+<textarea id="text-input" rows="6">[translate:Voglio bere il latte e poi guardare il browser in Italia.]</textarea>
+
+<div class="button-group">
+  <label>Shift: <input type="number" id="shift" value="3" min="0" max="25"></label>
+  <button id="encrypt-btn">Encrypt</button>
 </div>
+
+<div class="button-group">
+  <button id="brute-btn">Brute-force Decode</button>
+</div>
+
+<div class="button-group">
+  <select id="lang-select">
+    <option value="italian" selected>Italian</option>
+    <option value="english">English</option>
+  </select>
+  <button id="lang-decode">Decode using Language</button>
+</div>
+
 <h4>Letter Distribution</h4>
 <div id="letter-chart"></div>
+
 <h4>Encrypted Text</h4>
 <pre id="encrypted-text" style="background:rgba(0,0,0,0.2);padding:0.5rem;border-radius:4px;"></pre>
+
 <h4>Decoded Text (Brute-force)</h4>
 <pre id="brute-text" style="background:rgba(0,0,0,0.2);padding:0.5rem;border-radius:4px;"></pre>
+
 <h4>Decoded Text (Language)</h4>
 <pre id="lang-text" style="background:rgba(0,0,0,0.2);padding:0.5rem;border-radius:4px;"></pre>
 </div>
-
 </div>
+
 <script>
 // -------------------- Dataset Helpers --------------------
 function readTable(tableId){
@@ -211,13 +256,23 @@ function countLetters(text){
 function renderBar(counts, container){
     container.innerHTML='';
     Object.entries(counts).forEach(([letter,value])=>{
-        const row=document.createElement('div'); row.className='bar-row';
-        const lbl=document.createElement('div'); lbl.className='bar-label'; lbl.textContent=letter;
-        const wrap=document.createElement('div'); wrap.className='bar-wrap';
-        const fill=document.createElement('div'); fill.className='bar-fill'; fill.style.width=(value*5)+'px';
+        const row=document.createElement('div'); 
+        row.className='bar-row';
+        const lbl=document.createElement('div'); 
+        lbl.className='bar-label'; 
+        lbl.textContent=letter;
+        const wrap=document.createElement('div'); 
+        wrap.className='bar-wrap';
+        const fill=document.createElement('div'); 
+        fill.className='bar-fill'; 
+        fill.style.width=(value*5)+'px';
         wrap.appendChild(fill);
-        const val=document.createElement('div'); val.className='bar-value'; val.textContent=value;
-        row.appendChild(lbl); row.appendChild(wrap); row.appendChild(val);
+        const val=document.createElement('div'); 
+        val.className='bar-value'; 
+        val.textContent=value;
+        row.appendChild(lbl); 
+        row.appendChild(wrap); 
+        row.appendChild(val);
         container.appendChild(row);
     });
 }
@@ -225,8 +280,8 @@ function renderBar(counts, container){
 function caesarShift(text,shift){
     return text.split('').map(ch=>{
         const c=ch.charCodeAt(0);
-        if(c>=65 && c<=90) return String.fromCharCode((c-65+shift)%26+65);
-        if(c>=97 && c<=122) return String.fromCharCode((c-97+shift)%26+97);
+        if(c>=65 && c<=90) return String.fromCharCode((c-65+shift+26)%26+65);
+        if(c>=97 && c<=122) return String.fromCharCode((c-97+shift+26)%26+97);
         return ch;
     }).join('');
 }
@@ -246,8 +301,10 @@ const langFreq={
 function decodeWithLang(cipher,lang){
     const freq=langFreq[lang];
     const counts=countLetters(cipher);
-    const sortedCipher=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    const sortedCipher=Object.entries(counts).filter(([_,v])=>v>0).sort((a,b)=>b[1]-a[1]);
     const sortedLang=Object.entries(freq).sort((a,b)=>b[1]-a[1]);
+    if(sortedCipher.length === 0) return cipher; // no letters
+    // Calculate shift based on most frequent letters
     const shift=(sortedCipher[0][0].charCodeAt(0)-sortedLang[0][0].charCodeAt(0)+26)%26;
     return caesarShift(cipher,26-shift);
 }
@@ -259,6 +316,9 @@ document.getElementById('encrypt-btn').addEventListener('click',()=>{
     const cipher=caesarShift(txt,shift);
     document.getElementById('encrypted-text').textContent=cipher;
     renderBar(countLetters(txt),document.getElementById('letter-chart'));
+    // Clear decoded results
+    document.getElementById('brute-text').textContent='';
+    document.getElementById('lang-text').textContent='';
 });
 
 document.getElementById('brute-btn').addEventListener('click',()=>{
