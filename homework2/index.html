@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Dataset e Distribuzioni Statistiche - Concetti Base</title>
+  <meta name="description" content="Una spiegazione semplice di cosa sono i dataset e le distribuzioni statistiche nel contesto dell'analisi dei dati." />
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #9aa6b2;
+      --accent: #7dd3fc;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: #e6eef6;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin: 40px 0 30px;
+      padding: 0 10px;
+      position: relative;
+    }
+    h1 {
+      font-size: 2rem;
+      color: var(--accent);
+    }
+    p.lead {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-top: 8px;
+    }
+    a.home-link {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--card);
+      color: var(--accent);
+      text-decoration: none;
+      border-radius: 8px 0 0 8px;
+      transition: background 0.3s, color 0.3s;
+    }
+    a.home-link:hover { background: var(--accent); color: var(--card); }
+    a.home-link::before {
+      content: '←';
+      margin-right: 6px;
+      font-weight: bold;
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+    h2 {
+      color: var(--accent);
+      margin-top: 0;
+      font-size: 1.3rem;
+    }
+    ul { margin-left: 20px; padding-left: 10px; }
+    li { margin-bottom: 8px; }
+    footer {
+      text-align: center;
+      margin: 40px 0 20px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 1.6rem; }
+      h2 { font-size: 1.15rem; }
+      .wrap { padding: 15px; }
+      .card { padding: 16px; }
+      a.home-link { top: 10px; padding: 6px 10px; }
+    }
+    @media (max-width: 480px) {
+      body { font-size: 0.95rem; }
+      header { margin: 25px 0 20px; }
+      h1 { font-size: 1.4rem; }
+      .card { padding: 14px; }
+      a.home-link { padding: 5px 8px; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a href="../index.html" class="home-link">Home</a>
+    <header>
+      <h1>Dataset e Distribuzioni Statistiche</h1>
+      <p class="lead">Concetti fondamentali per comprendere come i dati vengono raccolti e analizzati.</p>
+    </header>
+
+    <div class="card">
+      <h2>1. Cos’è un dataset</h2>
+      <p>Un <strong>dataset</strong> è un insieme strutturato di dati raccolti per analisi o elaborazioni. Ogni riga di un dataset rappresenta un’osservazione (ad esempio un utente, un evento o un esperimento), mentre le colonne rappresentano le <em>variabili</em> o caratteristiche misurate.</p>
+      <ul>
+        <li>Può essere una semplice tabella o una grande banca dati.</li>
+        <li>I dati possono essere numerici, testuali, temporali o categoriali.</li>
+        <li>La qualità del dataset influisce direttamente sull’affidabilità delle analisi statistiche.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>2. Cos’è una distribuzione statistica</h2>
+      <p>Una <strong>distribuzione statistica</strong> descrive come i valori di una variabile si distribuiscono all’interno di un dataset. In altre parole, mostra con quale frequenza si presentano determinati valori o intervalli.</p>
+      <ul>
+        <li>Può essere rappresentata tramite grafici come istogrammi o curve di densità.</li>
+        <li>Aiuta a comprendere tendenze, variazioni e anomalie nei dati.</li>
+        <li>Esempi comuni sono la distribuzione normale, uniforme e binomiale.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>3. Relazione tra dataset e distribuzione</h2>
+      <p>Il dataset fornisce i dati grezzi; la distribuzione statistica ne riassume la forma e il comportamento. Analizzando la distribuzione, gli statistici possono individuare pattern, stimare probabilità e prendere decisioni informate.</p>
+    </div>
+
+    <footer>
+      © 2025 - Introduzione ai concetti statistici di base
+    </footer>
+  </div>
+</body>
+</html>
