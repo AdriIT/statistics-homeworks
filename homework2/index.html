@@ -1,138 +1,244 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Dataset e Distribuzioni Statistiche - Concetti Base</title>
-  <meta name="description" content="Una spiegazione semplice di cosa sono i dataset e le distribuzioni statistiche nel contesto dell'analisi dei dati." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homework 2</title>
   <style>
-    :root {
-      --bg: #0f1724;
-      --card: #0b1220;
-      --muted: #9aa6b2;
-      --accent: #7dd3fc;
-      --radius: 14px;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
+      background-color: #0f1724;
       color: #e6eef6;
       line-height: 1.6;
       margin: 0;
-    }
-    .wrap {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
+      padding: 0;
     }
     header {
       text-align: center;
-      margin: 40px 0 30px;
-      padding: 0 10px;
-      position: relative;
+      background-color: #0b1220;
+      padding: 40px 20px;
+      border-bottom: 2px solid #7dd3fc;
     }
-    h1 {
-      font-size: 2rem;
-      color: var(--accent);
+    h1 { color: #7dd3fc; font-size: 2rem; margin-bottom: 8px; }
+    p.lead { color: #9aa6b2; font-size: 1rem; }
+    section {
+      max-width: 900px;
+      margin: 40px auto;
+      background-color: #0b1220;
+      border-radius: 14px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      padding: 24px;
     }
-    p.lead {
-      color: var(--muted);
-      font-size: 1rem;
-      margin-top: 8px;
-    }
-    a.home-link {
-      position: absolute;
-      top: 20px;
-      left: 0;
-      display: flex;
-      align-items: center;
-      padding: 8px 12px;
-      background: var(--card);
-      color: var(--accent);
-      text-decoration: none;
-      border-radius: 8px 0 0 8px;
-      transition: background 0.3s, color 0.3s;
-    }
-    a.home-link:hover { background: var(--accent); color: var(--card); }
-    a.home-link::before {
-      content: '←';
-      margin-right: 6px;
-      font-weight: bold;
-    }
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    }
-    h2 {
-      color: var(--accent);
-      margin-top: 0;
-      font-size: 1.3rem;
-    }
+    h2 { color: #7dd3fc; margin-top: 0; font-size: 1.3rem; }
     ul { margin-left: 20px; padding-left: 10px; }
     li { margin-bottom: 8px; }
+    textarea, select, input, button {
+      background: #111a2b;
+      color: #e6eef6;
+      border: 1px solid #7dd3fc;
+      border-radius: 6px;
+      padding: 8px;
+      width: 100%;
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
+    button {
+      cursor: pointer;
+      background: #7dd3fc;
+      color: #0f1724;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    button:hover { background: #56b8e8; }
+    canvas { background: #111a2b; display: block; margin: 10px auto; border-radius: 10px; }
     footer {
       text-align: center;
+      color: #9aa6b2;
       margin: 40px 0 20px;
-      color: var(--muted);
       font-size: 0.9rem;
-    }
-
-    @media (max-width: 768px) {
-      h1 { font-size: 1.6rem; }
-      h2 { font-size: 1.15rem; }
-      .wrap { padding: 15px; }
-      .card { padding: 16px; }
-      a.home-link { top: 10px; padding: 6px 10px; }
-    }
-    @media (max-width: 480px) {
-      body { font-size: 0.95rem; }
-      header { margin: 25px 0 20px; }
-      h1 { font-size: 1.4rem; }
-      .card { padding: 14px; }
-      a.home-link { padding: 5px 8px; font-size: 0.9rem; }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <a href="../index.html" class="home-link">Home</a>
-    <header>
-      <h1>Dataset e Distribuzioni Statistiche</h1>
-      <p class="lead">Concetti fondamentali per comprendere come i dati vengono raccolti e analizzati.</p>
-    </header>
 
-    <div class="card">
-      <h2>1. Cos’è un dataset</h2>
-      <p>Un <strong>dataset</strong> è un insieme strutturato di dati raccolti per analisi o elaborazioni. Ogni riga di un dataset rappresenta un’osservazione (ad esempio un utente, un evento o un esperimento), mentre le colonne rappresentano le <em>variabili</em> o caratteristiche misurate.</p>
-      <ul>
-        <li>Può essere una semplice tabella o una grande banca dati.</li>
-        <li>I dati possono essere numerici, testuali, temporali o categoriali.</li>
-        <li>La qualità del dataset influisce direttamente sull’affidabilità delle analisi statistiche.</li>
-      </ul>
-    </div>
+<header>
+  <h1>Cybersecurity & Statistica</h1>
+  <p class="lead">Un laboratorio interattivo per esplorare dati, distribuzioni e crittografia.</p>
+</header>
 
-    <div class="card">
-      <h2>2. Cos’è una distribuzione statistica</h2>
-      <p>Una <strong>distribuzione statistica</strong> descrive come i valori di una variabile si distribuiscono all’interno di un dataset. In altre parole, mostra con quale frequenza si presentano determinati valori o intervalli.</p>
-      <ul>
-        <li>Può essere rappresentata tramite grafici come istogrammi o curve di densità.</li>
-        <li>Aiuta a comprendere tendenze, variazioni e anomalie nei dati.</li>
-        <li>Esempi comuni sono la distribuzione normale, uniforme e binomiale.</li>
-      </ul>
-    </div>
+<section>
+  <h2>1. Cosa sono Dataset e Distribuzioni</h2>
+  <p>Un <strong>dataset</strong> rappresenta una collezione di informazioni, spesso organizzate in righe e colonne, che descrivono un fenomeno o un insieme di eventi. Ogni record contiene una o più variabili osservabili, come utenti, tentativi di accesso o misure di rete.</p>
+  <p>Una <strong>distribuzione statistica</strong> invece mostra come i valori di una variabile si distribuiscono nel dataset: quali sono più frequenti, quali rari e come si comportano nel tempo.</p>
+  <ul>
+    <li>Il dataset fornisce i dati grezzi per l’analisi.</li>
+    <li>La distribuzione ne rivela l’andamento e i pattern nascosti.</li>
+    <li>Insieme, permettono di riconoscere comportamenti anomali e stimare rischi.</li>
+  </ul>
+</section>
 
-    <div class="card">
-      <h2>3. Relazione tra dataset e distribuzione</h2>
-      <p>Il dataset fornisce i dati grezzi; la distribuzione statistica ne riassume la forma e il comportamento. Analizzando la distribuzione, gli statistici possono individuare pattern, stimare probabilità e prendere decisioni informate.</p>
-    </div>
+<section>
+  <h2>2. Analisi di un Dataset</h2>
+  <p>Qui sotto puoi osservare un esempio semplificato di dataset legato ai tentativi di accesso a un sistema. Attraverso query SQL simulate, è possibile esplorare le distribuzioni dei valori e ricavarne statistiche.</p>
 
-    <footer>
-      © 2025 - Introduzione ai concetti statistici di base
-    </footer>
-  </div>
+  <table id="LoginAttempts" border="1" style="width:100%; text-align:center; border-collapse:collapse; margin-top:10px;">
+    <thead style="background:#111a2b;">
+      <tr><th>UserID</th><th>LoginHour</th><th>Success</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>8</td><td>1</td></tr>
+      <tr><td>1</td><td>9</td><td>0</td></tr>
+      <tr><td>2</td><td>10</td><td>0</td></tr>
+      <tr><td>2</td><td>10</td><td>1</td></tr>
+      <tr><td>3</td><td>11</td><td>1</td></tr>
+      <tr><td>3</td><td>11</td><td>0</td></tr>
+      <tr><td>3</td><td>12</td><td>1</td></tr>
+    </tbody>
+  </table>
+
+  <label for="columnSelect">Seleziona la colonna per la distribuzione:</label>
+  <select id="columnSelect">
+    <option value="UserID">UserID</option>
+    <option value="LoginHour">LoginHour</option>
+    <option value="Success">Success</option>
+  </select>
+
+  <button onclick="computeDistribution()">Calcola distribuzione</button>
+  <pre id="sqlOutput" style="white-space:pre-wrap; background:#111a2b; padding:10px; border-radius:10px;"></pre>
+  <div id="tableResult"></div>
+</section>
+
+<section>
+  <h2>3. Distribuzione delle Lettere nei Testi</h2>
+  <p>Le distribuzioni non si applicano solo ai numeri. Anche i testi presentano schemi statistici ricorrenti. Analizzando la frequenza delle lettere, è possibile riconoscere lo stile linguistico di un autore o addirittura decifrare messaggi cifrati.</p>
+
+  <select id="textSelect" onchange="analyzeText()">
+    <option value="holden">“Il giovane Holden”</option>
+    <option value="alice">“Alice nel Paese delle Meraviglie”</option>
+    <option value="wuthering">“Cime Tempestose”</option>
+  </select>
+
+  <canvas id="chartLetters" width="600" height="200"></canvas>
+</section>
+
+<section>
+  <h2>4. Cifrario di Cesare e Analisi Statistica</h2>
+  <p>Il <strong>cifrario di Cesare</strong> è uno dei metodi di cifratura più antichi: ogni lettera del messaggio viene spostata di un numero fisso di posizioni nell’alfabeto.  
+  Conoscendo la distribuzione delle lettere, è possibile tentare di decifrare automaticamente il testo attraverso <em>frequency analysis</em>.</p>
+
+  <label for="cipherInput">Testo da cifrare:</label>
+  <textarea id="cipherInput" rows="3" placeholder="Scrivi qui il tuo testo...">security is power</textarea>
+
+  <label for="shiftInput">Spostamento (shift):</label>
+  <input type="number" id="shiftInput" value="3" min="1" max="25" />
+
+  <button onclick="encryptText()">Cifra</button>
+  <textarea id="encryptedOutput" rows="3" readonly></textarea>
+
+  <h3>Decrittazione automatica tramite analisi di frequenza</h3>
+  <select id="langSelect">
+    <option value="english">Inglese</option>
+    <option value="italian">Italiano</option>
+  </select>
+  <button onclick="decryptFrequency()">Decifra</button>
+  <textarea id="decryptedOutput" rows="3" readonly></textarea>
+
+  <canvas id="cipherChart" width="600" height="200"></canvas>
+</section>
+
+<section>
+  <h2>5. Cosa Abbiamo Appreso</h2>
+  <ul>
+    <li>Un dataset rappresenta i dati da cui partono le analisi.</li>
+    <li>Le distribuzioni statistiche rivelano pattern nascosti nei dati e nei testi.</li>
+    <li>La crittografia, seppur antica, mostra come la matematica e le statistiche possano rivelare o proteggere l’informazione.</li>
+  </ul>
+</section>
+
+<script>
+function computeDistribution() {
+  const col = document.getElementById('columnSelect').value;
+  const rows = document.querySelectorAll('#LoginAttempts tbody tr');
+  const data = {};
+  rows.forEach(r => {
+    const value = r.querySelector(`td:nth-child(${col === 'UserID' ? 1 : col === 'LoginHour' ? 2 : 3})`).textContent;
+    data[value] = (data[value] || 0) + 1;
+  });
+  let resultHTML = '<table border="1" style="width:100%; border-collapse:collapse; text-align:center;"><tr><th>' + col + '</th><th>Conteggio</th></tr>';
+  Object.entries(data).forEach(([k,v]) => resultHTML += `<tr><td>${k}</td><td>${v}</td></tr>`);
+  resultHTML += '</table>';
+  document.getElementById('tableResult').innerHTML = resultHTML;
+  document.getElementById('sqlOutput').textContent = `SELECT ${col}, COUNT(*) AS Conteggio FROM LoginAttempts GROUP BY ${col};`;
+}
+
+const texts = {
+  holden: "If you really want to hear about it, the first thing you'll probably want to know is where I was born...",
+  alice: "Alice was beginning to get very tired of sitting by her sister on the bank...",
+  wuthering: "1801. I have just returned from a visit to my landlord—the solitary neighbour that I shall be troubled with..."
+};
+
+function analyzeText() {
+  const key = document.getElementById('textSelect').value;
+  const txt = texts[key].toUpperCase().replace(/[^A-Z]/g, '');
+  const freq = {};
+  for (let ch of txt) freq[ch] = (freq[ch] || 0) + 1;
+  renderChart(freq, 'chartLetters');
+}
+
+function renderChart(freq, canvasId) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const letters = Object.keys(freq).sort();
+  const max = Math.max(...Object.values(freq));
+  const barWidth = canvas.width / letters.length;
+  letters.forEach((l,i)=>{
+    const h = (freq[l]/max)*canvas.height*0.9;
+    ctx.fillStyle = '#7dd3fc';
+    ctx.fillRect(i*barWidth, canvas.height - h, barWidth-2, h);
+    ctx.fillStyle = '#9aa6b2';
+    ctx.fillText(l, i*barWidth + 4, canvas.height - 4);
+  });
+}
+
+function encryptText() {
+  const text = document.getElementById('cipherInput').value.toUpperCase();
+  const shift = parseInt(document.getElementById('shiftInput').value);
+  const result = text.replace(/[A-Z]/g, c => String.fromCharCode((c.charCodeAt(0)-65+shift)%26+65));
+  document.getElementById('encryptedOutput').value = result;
+  const freq = {};
+  for (let ch of result) if(/[A-Z]/.test(ch)) freq[ch] = (freq[ch]||0)+1;
+  renderChart(freq, 'cipherChart');
+}
+
+const refFreq = {
+  english: { E:12.7, T:9.1, A:8.2, O:7.5, I:7.0, N:6.7, S:6.3, H:6.1, R:6.0, D:4.3 },
+  italian: { E:11.8, A:11.7, I:10.1, O:9.8, N:6.9, T:6.2, R:6.1, L:5.8, S:4.9, C:4.5 }
+};
+
+function decryptFrequency() {
+  const cipher = document.getElementById('encryptedOutput').value;
+  const lang = document.getElementById('langSelect').value;
+  let bestShift = 0, bestScore = Infinity;
+  for(let s=0;s<26;s++){
+    const test = cipher.replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65-s+26)%26+65));
+    const freq = {};
+    for(let ch of test) if(/[A-Z]/.test(ch)) freq[ch]=(freq[ch]||0)+1;
+    const total = Object.values(freq).reduce((a,b)=>a+b,0);
+    let score=0;
+    for(const [k,v] of Object.entries(refFreq[lang])) score+=Math.abs((freq[k]||0)/total*100-v);
+    if(score<bestScore){bestScore=score;bestShift=s;}
+  }
+  const decrypted = cipher.replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65-bestShift+26)%26+65));
+  document.getElementById('decryptedOutput').value = decrypted;
+}
+
+window.onload = () => {
+  computeDistribution();
+  analyzeText();
+  encryptText();
+};
+</script>
+
 </body>
 </html>
