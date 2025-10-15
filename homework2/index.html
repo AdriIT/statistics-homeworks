@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laboratorio Interattivo - Dataset e Distribuzioni</title>
+  <title>Homework 2 - Dataset e Distribuzioni</title>
   <style>
     body {
       font-family: 'Inter', system-ui, sans-serif;
@@ -30,8 +30,6 @@
       padding: 24px;
     }
     h2 { color: #7dd3fc; margin-top: 0; font-size: 1.3rem; }
-    ul { margin-left: 20px; padding-left: 10px; }
-    li { margin-bottom: 8px; }
     textarea, select, input, button {
       background: #111a2b;
       color: #e6eef6;
@@ -62,29 +60,46 @@
       margin: 40px 0 20px;
       font-size: 0.9rem;
     }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #7dd3fc;
+      padding: 6px;
+    }
+    th { background: #111a2b; }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>Cybersecurity & Statistica</h1>
-  <p class="lead">Un laboratorio interattivo per esplorare dati, distribuzioni e crittografia.</p>
+  <h1>Laboratorio Interattivo: Dataset e Distribuzioni</h1>
+  <p class="lead">Un percorso guidato tra concetti statistici, dati reali e crittografia.</p>
 </header>
 
 <section>
-  <h2>1. Descrizione del Dataset</h2>
-  <p>Il dataset rappresenta un insieme di dati osservati da un sistema informatico reale o simulato.  
-  Ogni riga contiene le informazioni relative a un tentativo di accesso, indicando l’utente, il paese d’origine, il browser utilizzato e l’esito del tentativo.</p>
+  <h2>1. Cos’è un Dataset</h2>
+  <p>Un <strong>dataset</strong> è una raccolta strutturata di dati, spesso organizzata in forma tabellare.  
+  Ogni riga rappresenta un’osservazione (ad esempio un utente o un evento), e ogni colonna una variabile misurata (es. Paese, browser, esito, ecc.).</p>
+  <p>I dataset sono alla base di ogni analisi statistica: permettono di individuare schemi, tendenze e anomalie.</p>
+</section>
 
-  <ul>
-    <li><strong>UserID</strong>: identificativo numerico dell’utente.</li>
-    <li><strong>Country</strong>: paese da cui proviene il login.</li>
-    <li><strong>Browser</strong>: applicazione usata per accedere.</li>
-    <li><strong>Success</strong>: indica se l’accesso è riuscito (1) o fallito (0).</li>
-  </ul>
+<section>
+  <h2>2. Cos’è una Distribuzione Statistica</h2>
+  <p>Una <strong>distribuzione</strong> mostra come si ripetono i valori di una variabile all’interno di un dataset.  
+  Può essere univariata (una sola variabile) o bivariata (relazione tra due variabili).  
+  Le distribuzioni aiutano a capire la forma dei dati, la loro variabilità e le relazioni tra variabili.</p>
+</section>
 
-  <table id="LoginAttempts" border="1" style="width:100%; text-align:center; border-collapse:collapse; margin-top:10px;">
-    <thead style="background:#111a2b;">
+<section>
+  <h2>3. Analisi Univariata</h2>
+  <p>Seleziona una variabile (k ≤ 3) per calcolare la sua distribuzione univariata.</p>
+
+  <table id="LoginAttempts">
+    <thead>
       <tr><th>UserID</th><th>Country</th><th>Browser</th><th>Success</th></tr>
     </thead>
     <tbody>
@@ -98,152 +113,166 @@
     </tbody>
   </table>
 
-  <label for="columnSelect">Seleziona la colonna per la distribuzione:</label>
-  <select id="columnSelect">
+  <label>Seleziona la variabile:</label>
+  <select id="uniSelect">
     <option value="Country">Country</option>
     <option value="Browser">Browser</option>
     <option value="Success">Success</option>
   </select>
-  <button onclick="computeDistribution()">Calcola distribuzione</button>
-  <pre id="sqlOutput" style="white-space:pre-wrap; background:#111a2b; padding:10px; border-radius:10px;"></pre>
-  <div id="tableResult"></div>
+  <button onclick="computeUnivariate()">Calcola distribuzione</button>
+  <canvas id="uniChart" width="600" height="200"></canvas>
 </section>
 
 <section>
-  <h2>2. Descrizione della Distribuzione</h2>
-  <p>Una <strong>distribuzione</strong> descrive come si ripetono i valori all’interno del dataset.  
-  Ad esempio, osservando la distribuzione dei browser usati o dei paesi da cui avvengono gli accessi, è possibile identificare tendenze o anomalie.</p>
-  <p>Le distribuzioni sono fondamentali in cybersecurity perché permettono di riconoscere comportamenti sospetti, come accessi ripetuti da una stessa area geografica o da un browser insolito.</p>
-</section>
-
-<section>
-  <h2>3. Distribuzione delle Parole nei Testi</h2>
-  <p>Le distribuzioni non si applicano solo ai numeri: anche i testi mostrano schemi statistici.  
-  In questo esempio analizziamo la <strong>frequenza delle parole</strong> in brevi estratti legati alla sicurezza informatica.</p>
-
-  <select id="textSelect" onchange="analyzeText()">
-    <option value="phishing">E-mail di phishing</option>
-    <option value="password">Messaggio su password</option>
-    <option value="firewall">Avviso di firewall</option>
+  <h2>4. Analisi Bivariata</h2>
+  <p>Ora osserviamo la relazione tra due variabili selezionate dal dataset.</p>
+  <label>Variabile X:</label>
+  <select id="biSelectX">
+    <option value="Country">Country</option>
+    <option value="Browser">Browser</option>
+    <option value="Success">Success</option>
   </select>
-
-  <canvas id="chartWords" width="600" height="200"></canvas>
+  <label>Variabile Y:</label>
+  <select id="biSelectY">
+    <option value="Browser">Browser</option>
+    <option value="Country">Country</option>
+    <option value="Success">Success</option>
+  </select>
+  <button onclick="computeBivariate()">Calcola distribuzione bivariata</button>
+  <div id="biResult"></div>
 </section>
 
 <section>
-  <h2>4. Cifrario di Cesare: Applicazione Pratica</h2>
-  <p>Il <strong>cifrario di Cesare</strong> sposta ogni lettera del messaggio di un numero fisso di posizioni nell’alfabeto.  
-  Di seguito puoi provare a cifrare e decifrare una frase legata al tema della sicurezza digitale.</p>
+  <h2>5. Analisi del Testo e Cifrario di Cesare</h2>
+  <p>Scrivi un testo, visualizza la distribuzione delle lettere, cifralo con uno shift segreto e prova a decodificarlo automaticamente!</p>
 
-  <label for="cipherInput">Testo da cifrare:</label>
-  <textarea id="cipherInput" rows="3" placeholder="Scrivi qui il testo...">password leaks are dangerous</textarea>
+  <textarea id="textInput" rows="3">Cybersecurity relies on statistics and data.</textarea>
+  <button onclick="analyzeLetters()">Mostra distribuzione lettere</button>
+  <canvas id="letterChart" width="600" height="200"></canvas>
 
-  <label for="shiftInput">Spostamento (shift):</label>
-  <input type="number" id="shiftInput" value="4" min="1" max="25" />
-
+  <h3>Cifrario di Cesare</h3>
+  <label>Shift (nascosto all’analisi):</label>
+  <input type="number" id="shiftInput" value="5" min="1" max="25">
   <button onclick="encryptText()">Cifra</button>
   <textarea id="encryptedOutput" rows="3" readonly></textarea>
 
-  <h3>Decrittazione automatica tramite analisi di frequenza</h3>
+  <h3>Decodifica senza sapere lo shift</h3>
+  <button onclick="bruteForceDecrypt()">Prova tutti gli shift</button>
+  <textarea id="bruteOutput" rows="3" readonly></textarea>
+
+  <h3>Decodifica tramite distribuzione linguistica</h3>
   <select id="langSelect">
     <option value="english">Inglese</option>
     <option value="italian">Italiano</option>
   </select>
-  <button onclick="decryptFrequency()">Decifra</button>
-  <textarea id="decryptedOutput" rows="3" readonly></textarea>
-
-  <canvas id="cipherChart" width="600" height="200"></canvas>
+  <button onclick="languageDecrypt()">Decifra</button>
+  <textarea id="langOutput" rows="3" readonly></textarea>
 </section>
 
-<footer>
-  © 2025 – Laboratorio Interattivo di Statistica e Cybersecurity
-</footer>
+
 
 <script>
-function computeDistribution() {
-  const col = document.getElementById('columnSelect').value;
-  const rows = document.querySelectorAll('#LoginAttempts tbody tr');
-  const colIndex = {UserID:1, Country:2, Browser:3, Success:4}[col];
-  const data = {};
-  rows.forEach(r => {
-    const value = r.querySelector(`td:nth-child(${colIndex})`).textContent;
-    data[value] = (data[value] || 0) + 1;
-  });
-  let resultHTML = '<table border="1" style="width:100%; border-collapse:collapse; text-align:center;"><tr><th>' + col + '</th><th>Conteggio</th></tr>';
-  Object.entries(data).forEach(([k,v]) => resultHTML += `<tr><td>${k}</td><td>${v}</td></tr>`);
-  resultHTML += '</table>';
-  document.getElementById('tableResult').innerHTML = resultHTML;
-  document.getElementById('sqlOutput').textContent = `SELECT ${col}, COUNT(*) AS Conteggio FROM LoginAttempts GROUP BY ${col};`;
-}
-
-const texts = {
-  phishing: "Dear user your account is suspended please click here to verify your login information",
-  password: "Always use strong passwords and avoid reusing the same one on multiple sites",
-  firewall: "Firewall blocked multiple unauthorized attempts to access the system"
-};
-
-function analyzeText() {
-  const key = document.getElementById('textSelect').value;
-  const words = texts[key].toLowerCase().split(/\W+/).filter(w => w.length > 2);
-  const freq = {};
-  for (let w of words) freq[w] = (freq[w] || 0) + 1;
-  renderChart(freq, 'chartWords');
-}
-
-function renderChart(freq, canvasId) {
+// ---- FUNZIONE GENERICA PER DISEGNO GRAFICI ----
+function drawBarChart(freq, canvasId) {
   const canvas = document.getElementById(canvasId);
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   const labels = Object.keys(freq);
-  const max = Math.max(...Object.values(freq));
+  const values = Object.values(freq);
+  const max = Math.max(...values);
   const barWidth = canvas.width / labels.length;
-  labels.forEach((l,i)=>{
-    const h = (freq[l]/max)*canvas.height*0.85;
-    ctx.fillStyle = '#7dd3fc';
-    ctx.fillRect(i*barWidth, canvas.height - h, barWidth-2, h);
-    ctx.fillStyle = 'black';
-    ctx.font = '12px sans-serif';
-    ctx.fillText(l, i*barWidth + 3, canvas.height - 5);
+
+  labels.forEach((l, i) => {
+    const h = (values[i] / max) * canvas.height * 0.85;
+    ctx.fillStyle = "#7dd3fc";
+    ctx.fillRect(i * barWidth, canvas.height - h, barWidth - 2, h);
+    ctx.fillStyle = "black";
+    ctx.font = "12px sans-serif";
+    ctx.fillText(l, i * barWidth + 3, canvas.height - 5);
   });
+}
+
+// ---- 3. DISTRIBUZIONE UNIVARIATA ----
+function computeUnivariate() {
+  const col = document.getElementById("uniSelect").value;
+  const table = document.querySelectorAll("#LoginAttempts tbody tr");
+  const idx = {UserID:1, Country:2, Browser:3, Success:4}[col];
+  const freq = {};
+  table.forEach(r => {
+    const val = r.querySelector(`td:nth-child(${idx})`).textContent;
+    freq[val] = (freq[val] || 0) + 1;
+  });
+  drawBarChart(freq, "uniChart");
+}
+
+// ---- 4. DISTRIBUZIONE BIVARIATA ----
+function computeBivariate() {
+  const x = document.getElementById("biSelectX").value;
+  const y = document.getElementById("biSelectY").value;
+  const idx = {UserID:1, Country:2, Browser:3, Success:4};
+  const rows = document.querySelectorAll("#LoginAttempts tbody tr");
+  const combo = {};
+  rows.forEach(r => {
+    const xv = r.querySelector(`td:nth-child(${idx[x]})`).textContent;
+    const yv = r.querySelector(`td:nth-child(${idx[y]})`).textContent;
+    const key = `${xv}-${yv}`;
+    combo[key] = (combo[key] || 0) + 1;
+  });
+  let html = "<table><tr><th>" + x + "</th><th>" + y + "</th><th>Conteggio</th></tr>";
+  for (const [k,v] of Object.entries(combo)) {
+    const [xv, yv] = k.split("-");
+    html += `<tr><td>${xv}</td><td>${yv}</td><td>${v}</td></tr>`;
+  }
+  html += "</table>";
+  document.getElementById("biResult").innerHTML = html;
+}
+
+// ---- 5. ANALISI LETTERE E CIFRARIO ----
+function analyzeLetters() {
+  const text = document.getElementById("textInput").value.toUpperCase();
+  const freq = {};
+  for (let c of text) if(/[A-Z]/.test(c)) freq[c] = (freq[c]||0)+1;
+  drawBarChart(freq, "letterChart");
 }
 
 function encryptText() {
-  const text = document.getElementById('cipherInput').value.toUpperCase();
-  const shift = parseInt(document.getElementById('shiftInput').value);
-  const result = text.replace(/[A-Z]/g, c => String.fromCharCode((c.charCodeAt(0)-65+shift)%26+65));
-  document.getElementById('encryptedOutput').value = result;
-  const freq = {};
-  for (let ch of result) if(/[A-Z]/.test(ch)) freq[ch] = (freq[ch]||0)+1;
-  renderChart(freq, 'cipherChart');
+  const shift = parseInt(document.getElementById("shiftInput").value);
+  const text = document.getElementById("textInput").value.toUpperCase();
+  const enc = text.replace(/[A-Z]/g, c => String.fromCharCode((c.charCodeAt(0)-65+shift)%26+65));
+  document.getElementById("encryptedOutput").value = enc;
 }
 
-const refFreq = {
-  english: { E:12.7, T:9.1, A:8.2, O:7.5, I:7.0, N:6.7, S:6.3, H:6.1, R:6.0, D:4.3 },
-  italian: { E:11.8, A:11.7, I:10.1, O:9.8, N:6.9, T:6.2, R:6.1, L:5.8, S:4.9, C:4.5 }
+function bruteForceDecrypt() {
+  const cipher = document.getElementById("encryptedOutput").value;
+  let results = "";
+  for(let s=1;s<26;s++){
+    const dec = cipher.replace(/[A-Z]/g, c => String.fromCharCode((c.charCodeAt(0)-65-s+26)%26+65));
+    results += `Shift ${s}: ${dec}\n`;
+  }
+  document.getElementById("bruteOutput").value = results;
+}
+
+const langFreq = {
+  english: {E:12.7,T:9.1,A:8.2,O:7.5,I:7.0,N:6.7,S:6.3,H:6.1,R:6.0,D:4.3},
+  italian: {E:11.8,A:11.7,I:10.1,O:9.8,N:6.9,T:6.2,R:6.1,L:5.8,S:4.9,C:4.5}
 };
 
-function decryptFrequency() {
-  const cipher = document.getElementById('encryptedOutput').value;
-  const lang = document.getElementById('langSelect').value;
-  let bestShift = 0, bestScore = Infinity;
+function languageDecrypt() {
+  const cipher = document.getElementById("encryptedOutput").value;
+  const lang = document.getElementById("langSelect").value;
+  let bestShift=0, bestScore=Infinity;
   for(let s=0;s<26;s++){
-    const test = cipher.replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65-s+26)%26+65));
+    const dec = cipher.replace(/[A-Z]/g, c=>String.fromCharCode((c.charCodeAt(0)-65-s+26)%26+65));
     const freq = {};
-    for(let ch of test) if(/[A-Z]/.test(ch)) freq[ch]=(freq[ch]||0)+1;
+    for(let ch of dec) if(/[A-Z]/.test(ch)) freq[ch]=(freq[ch]||0)+1;
     const total = Object.values(freq).reduce((a,b)=>a+b,0);
     let score=0;
-    for(const [k,v] of Object.entries(refFreq[lang])) score+=Math.abs((freq[k]||0)/total*100-v);
+    for(const [k,v] of Object.entries(langFreq[lang])) score+=Math.abs((freq[k]||0)/total*100-v);
     if(score<bestScore){bestScore=score;bestShift=s;}
   }
   const decrypted = cipher.replace(/[A-Z]/g,c=>String.fromCharCode((c.charCodeAt(0)-65-bestShift+26)%26+65));
-  document.getElementById('decryptedOutput').value = decrypted;
+  document.getElementById("langOutput").value = decrypted;
 }
-
-window.onload = () => {
-  computeDistribution();
-  analyzeText();
-  encryptText();
-};
 </script>
 
 </body>
