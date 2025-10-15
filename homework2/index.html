@@ -1,242 +1,138 @@
-<!doctype html>
-<html lang="it">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Homework 2 - Dataset e Distribuzioni Statistiche</title>
-  <meta name="description" content="Esempio interattivo di dataset e distribuzioni statistiche, con cifrario di Cesare e decodifica linguistica in italiano e in inglese." />
-  <style>
-    :root {
-      --bg: #0f1724;
-      --card: #0b1220;
-      --muted: #9aa6b2;
-      --accent: #7dd3fc;
-      --radius: 14px;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: #e6eef6;
-      line-height: 1.6;
-    }
-    .wrap { max-width: 950px; margin: 0 auto; padding: 20px; }
-    header { text-align: center; margin: 40px 0 30px; }
-    h1 { color: var(--accent); font-size: 2rem; }
-    p.lead { color: var(--muted); font-size: 1rem; margin-top: 8px; }
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    }
-    h2 { color: var(--accent); margin-bottom: 10px; font-size: 1.3rem; }
-    canvas, table {
-      margin-top: 10px;
-      width: 100%;
-      color: white;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      text-align: center;
-    }
-    th, td {
-      padding: 8px;
-      border: 1px solid #444;
-    }
-    th { background: var(--accent); color: #000; }
-    td { background: #1a2233; }
-    input, select, textarea, button {
-      margin-top: 8px;
-      padding: 8px;
-      border-radius: 8px;
-      border: none;
-      background: #1c2738;
-      color: #e6eef6;
-      width: 100%;
-    }
-    button {
-      background: var(--accent);
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover { background: #a5e5ff; }
-    .white-text { color: #fff !important; font-weight: bold; }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <header>
-      <h1>Dataset e Distribuzioni Statistiche</h1>
-      <p class="lead">Un percorso interattivo tra concetti e applicazioni pratiche.</p>
-    </header>
+<script>
+    // --- Esempio testo italiano per Cesare ---
+    const sampleText = "oggi vado al mercato per comprare mele e arance perché mi piace mangiare frutta fresca ogni giorno";
+    const sampleShift = 5; // shift di prova
 
-    <!-- Sezione 1: Cos’è un dataset -->
-    <div class="card">
-      <h2>1. Cos’è un Dataset</h2>
-      <p>Un <strong>dataset</strong> è una raccolta strutturata di dati. Può contenere numeri, parole, misurazioni o osservazioni. Ogni riga rappresenta un’osservazione, mentre le colonne rappresentano variabili o attributi.</p>
-      <p>Esempio: un dataset sulle vendite in tre paesi:</p>
-      <table id="datasetTable"></table>
-    </div>
-
-    <!-- Sezione 2: Cos’è una Distribuzione -->
-    <div class="card">
-      <h2>2. Cos’è una Distribuzione Statistica</h2>
-      <p>Una <strong>distribuzione</strong> descrive come si presentano i valori di una variabile. Può essere rappresentata come tabella o istogramma che mostra quanto frequentemente ogni valore compare nel dataset.</p>
-    </div>
-
-    <!-- Sezione 3: Distribuzione univariata -->
-    <div class="card">
-      <h2>3. Distribuzione univariata</h2>
-      <p>Calcoliamo la distribuzione per la variabile <strong>Vendite</strong> nei primi 3 paesi.</p>
-      <table id="univariateTable"></table>
-    </div>
-
-    <!-- Sezione 4: Distribuzione bivariata -->
-    <div class="card">
-      <h2>4. Distribuzione bivariata</h2>
-      <p>Confrontiamo due variabili: <strong>Paese</strong> e <strong>Vendite</strong>.</p>
-      <table id="bivariateTable"></table>
-    </div>
-
-    <!-- Sezione 5: Distribuzione di lettere -->
-    <div class="card">
-      <h2>5. Distribuzione delle lettere + Cifrario di Cesare</h2>
-      <p>Inserisci un testo, calcola la distribuzione delle lettere, applica il cifrario e prova a decifrare.</p>
-
-      <textarea id="textInput" rows="3" placeholder="Scrivi qualcosa..."></textarea>
-      <label for="shiftInput">Shift (spostamento lettere):</label>
-      <input type="number" id="shiftInput" value="3" min="1" max="25">
-      <button onclick="applyCaesar()">Applica Cifrario di Cesare</button>
-      <textarea id="encryptedOutput" rows="3" readonly placeholder="Testo cifrato"></textarea>
-      <button onclick="bruteForce()">Decodifica per forza bruta</button>
-      <textarea id="bruteOutput" rows="3" readonly placeholder="Risultato decodifica brute force"></textarea>
-
-      <label for="langSelect">Decodifica per distribuzione linguistica:</label>
-      <select id="langSelect">
-        <option value="it" selected>Italiano</option>
-        <option value="en">English</option>
-      </select>
-      <button onclick="languageDecrypt()">Decodifica per linguaggio</button>
-      <textarea id="langOutput" rows="3" readonly placeholder="Risultato decodifica linguistica"></textarea>
-
-      <table id="letterTable"></table>
-    </div>
-
-    <footer><p class="muted">© 2025 – Demo educativa di statistica applicata e crittografia.</p></footer>
-  </div>
-
-  <script>
-    // === DATI E TABELLE BASE ===
-    const dataset = [
-      { paese: "Italia", vendite: 120 },
-      { paese: "Francia", vendite: 150 },
-      { paese: "Spagna", vendite: 100 },
-      { paese: "Italia", vendite: 80 },
-      { paese: "Francia", vendite: 130 },
-      { paese: "Spagna", vendite: 90 }
-    ];
-
-    function renderDataset() {
-      const t = document.getElementById("datasetTable");
-      t.innerHTML = "<tr><th>Paese</th><th>Vendite</th></tr>" +
-        dataset.map(d => `<tr><td>${d.paese}</td><td class='white-text'>${d.vendite}</td></tr>`).join("");
+    // --- Funzioni Cesare ---
+    function caesarShiftChar(ch, shift) {
+        const A = 'A'.charCodeAt(0);
+        const a = 'a'.charCodeAt(0);
+        const code = ch.charCodeAt(0);
+        if (code >= A && code < A + 26) return String.fromCharCode((code - A + shift + 26) % 26 + A);
+        if (code >= a && code < a + 26) return String.fromCharCode((code - a + shift + 26) % 26 + a);
+        return ch;
     }
 
-    function renderUnivariate() {
-      const subset = dataset.slice(0, 3);
-      const t = document.getElementById("univariateTable");
-      t.innerHTML = "<tr><th>Paese</th><th>Vendite</th></tr>" +
-        subset.map(d => `<tr><td>${d.paese}</td><td class='white-text'>${d.vendite}</td></tr>`).join("");
+    function caesarEncrypt(text, shift) {
+        return Array.from(text).map(ch => caesarShiftChar(ch, shift)).join('');
     }
 
-    function renderBivariate() {
-      const grouped = {};
-      dataset.forEach(d => { grouped[d.paese] = (grouped[d.paese] || 0) + d.vendite; });
-      const t = document.getElementById("bivariateTable");
-      t.innerHTML = "<tr><th>Paese</th><th>Somma Vendite</th></tr>" +
-        Object.entries(grouped).map(([p, v]) => `<tr><td>${p}</td><td class='white-text'>${v}</td></tr>`).join("");
+    // --- Calcolo frequenze lettere ---
+    function computeLetterCounts(text) {
+        const A = 'A'.charCodeAt(0);
+        const counts = {};
+        for (let i = 0; i < 26; i++) counts[String.fromCharCode(A + i)] = 0;
+        for (const ch of (text || '').toUpperCase()) {
+            const code = ch.charCodeAt(0);
+            if (code >= A && code < A + 26) counts[String.fromCharCode(code)]++;
+        }
+        return counts;
     }
 
-    // === CIFRARIO DI CESARE E DECODIFICHE ===
-    function applyCaesar() {
-      const text = document.getElementById("textInput").value.toUpperCase();
-      const shift = parseInt(document.getElementById("shiftInput").value);
-      const encrypted = text.replace(/[A-Z]/g, c =>
-        String.fromCharCode((c.charCodeAt(0) - 65 + shift) % 26 + 65)
-      );
-      document.getElementById("encryptedOutput").value = encrypted;
-      renderLetterDistribution(encrypted);
+    function normalizeFreqs(freqs) {
+        const total = Object.values(freqs).reduce((a, b) => a + b, 0) || 1;
+        const out = {};
+        Object.keys(freqs).forEach(k => out[k] = freqs[k] / total);
+        return out;
     }
 
-    function bruteForce() {
-      const cipher = document.getElementById("encryptedOutput").value;
-      let best = "";
-      for (let s = 1; s < 26; s++) {
-        const dec = cipher.replace(/[A-Z]/g, c =>
-          String.fromCharCode((c.charCodeAt(0) - 65 - s + 26) % 26 + 65)
-        );
-        best += `Shift ${s}: ${dec}\n`;
-      }
-      document.getElementById("bruteOutput").value = best;
+    function rotateFreqs(freqs, shift) {
+        const A = 'A'.charCodeAt(0);
+        const out = {};
+        for (let i = 0; i < 26; i++) out[String.fromCharCode(A + i)] = 0;
+        Object.keys(freqs).forEach(k => {
+            const idx = k.charCodeAt(0) - A;
+            const newIdx = (idx + shift + 26) % 26;
+            out[String.fromCharCode(A + newIdx)] = freqs[k];
+        });
+        return out;
     }
 
-    const langFreq = {
-      en: { A: 8.2, B: 1.5, C: 2.8, D: 4.3, E: 12.7, F: 2.2, G: 2.0, H: 6.1, I: 7.0, J: 0.2, K: 0.8, L: 4.0, M: 2.4, N: 6.7, O: 7.5, P: 1.9, Q: 0.1, R: 6.0, S: 6.3, T: 9.1, U: 2.8, V: 1.0, W: 2.4, X: 0.2, Y: 2.0, Z: 0.1 },
-      it: { A: 11.7, B: 0.9, C: 4.5, D: 3.7, E: 11.8, F: 1.1, G: 1.6, H: 0.6, I: 10.1, L: 6.5, M: 2.5, N: 6.9, O: 9.8, P: 3.0, Q: 0.5, R: 6.4, S: 5.4, T: 6.2, U: 3.0, V: 2.1, Z: 1.1 }
+    function chiSquareDistance(obs, exp) {
+        const eps = 1e-9;
+        let sum = 0;
+        Object.keys(exp).forEach(k => {
+            const o = obs[k] || 0;
+            const e = exp[k] || 0;
+            sum += ((o - e) * (o - e)) / (e + eps);
+        });
+        return sum;
+    }
+
+    // --- Riferimenti frequenze ---
+    const REF_FREQ = {
+        italian: { A:0.117,B:0.009,C:0.045,D:0.037,E:0.117,F:0.011,G:0.016,H:0.006,I:0.101,J:0.001,K:0.001,L:0.065,M:0.025,N:0.068,O:0.098,P:0.03,Q:0.005,R:0.063,S:0.049,T:0.056,U:0.03,V:0.02,W:0.0003,X:0.0001,Y:0.0002,Z:0.011 },
+        english: { A:0.0817,B:0.0149,C:0.0278,D:0.0425,E:0.127,F:0.0223,G:0.0202,H:0.0609,I:0.0697,J:0.0015,K:0.0077,L:0.0403,M:0.0241,N:0.0675,O:0.0751,P:0.0193,Q:0.001,R:0.0599,S:0.0633,T:0.0906,U:0.0276,V:0.0098,W:0.0236,X:0.0015,Y:0.0197,Z:0.0007 }
     };
 
-    function languageDecrypt() {
-      const cipher = document.getElementById("encryptedOutput").value;
-      const lang = document.getElementById("langSelect").value;
-      let bestShift = 0, bestScore = Infinity;
-
-      for (let s = 0; s < 26; s++) {
-        const dec = cipher.replace(/[A-Z]/g, c =>
-          String.fromCharCode((c.charCodeAt(0) - 65 - s + 26) % 26 + 65)
-        );
-
-        const freq = {};
-        for (let ch of dec)
-          if (/[A-Z]/.test(ch)) freq[ch] = (freq[ch] || 0) + 1;
-        const total = Object.values(freq).reduce((a, b) => a + b, 0) || 1;
-
-        let score = 0;
-        for (const [k, v] of Object.entries(langFreq[lang]))
-          score += Math.abs((freq[k] || 0) / total * 100 - v);
-
-        if (score < bestScore) { bestScore = score; bestShift = s; }
-      }
-
-      const decrypted = cipher.replace(/[A-Z]/g, c =>
-        String.fromCharCode((c.charCodeAt(0) - 65 - bestShift + 26) % 26 + 65)
-      );
-
-      document.getElementById("langOutput").value = decrypted;
+    // --- Funzione auto-decode ---
+    function autoDecode(cipher, lang) {
+        const ref = REF_FREQ[lang];
+        const obsCounts = computeLetterCounts(cipher);
+        const obsFreq = normalizeFreqs(obsCounts);
+        let best = {shift: 0, score: Infinity};
+        for (let s = 0; s < 26; s++) {
+            const rotated = rotateFreqs(obsFreq, -s);
+            const score = chiSquareDistance(rotated, ref);
+            if (score < best.score) best = {shift: s, score};
+        }
+        const guessedShift = (26 - best.shift) % 26;
+        return caesarEncrypt(cipher, guessedShift);
     }
 
-    // === DISTRIBUZIONE LETTERE ===
-    function renderLetterDistribution(text) {
-      const freq = {};
-      for (let c of text)
-        if (/[A-Z]/.test(c)) freq[c] = (freq[c] || 0) + 1;
+    // --- Funzione per visualizzare istogrammi lettere con numeri in bianco ---
+    function renderLetterChart(counts, containerId) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        const entries = Object.entries(counts);
+        const max = Math.max(...entries.map(e => e[1]), 1);
+        const wrap = document.createElement('div');
+        wrap.style.display = 'flex';
+        wrap.style.flexDirection = 'column';
+        wrap.style.gap = '4px';
 
-      const total = Object.values(freq).reduce((a, b) => a + b, 0) || 1;
-      const t = document.getElementById("letterTable");
-      t.innerHTML = "<tr><th>Lettera</th><th>Occorrenze</th><th>%</th></tr>" +
-        Object.entries(freq)
-          .sort()
-          .map(([ch, val]) => `<tr><td>${ch}</td><td class='white-text'>${val}</td><td class='white-text'>${((val / total) * 100).toFixed(2)}%</td></tr>`)
-          .join("");
+        entries.forEach(([letter, value]) => {
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.alignItems = 'center';
+            const label = document.createElement('div');
+            label.textContent = letter;
+            label.style.width = '28px';
+            label.style.fontWeight = '700';
+            label.style.color = 'black'; // lettere in nero
+            const barWrap = document.createElement('div');
+            barWrap.style.flex = '1';
+            barWrap.style.background = 'rgba(0,0,0,0.05)';
+            barWrap.style.borderRadius = '4px';
+            barWrap.style.margin = '0 8px';
+            const bar = document.createElement('div');
+            bar.style.height = '18px';
+            bar.style.width = `${(value/max)*100}%`;
+            bar.style.background = '#800020';
+            bar.style.borderRadius = '4px';
+            barWrap.appendChild(bar);
+            const val = document.createElement('div');
+            val.textContent = value;
+            val.style.width = '48px';
+            val.style.textAlign = 'right';
+            val.style.color = 'white'; // numeri in bianco
+            row.appendChild(label);
+            row.appendChild(barWrap);
+            row.appendChild(val);
+            wrap.appendChild(row);
+        });
+        container.appendChild(wrap);
     }
 
-    renderDataset();
-    renderUnivariate();
-    renderBivariate();
-  </script>
-</body>
-</html>
+    // --- Esecuzione esempio ---
+    const encryptedText = caesarEncrypt(sampleText, sampleShift);
+    document.getElementById('encrypted-output').textContent = encryptedText;
+
+    const decodedIt = autoDecode(encryptedText, 'italian');
+    const decodedEn = autoDecode(encryptedText, 'english');
+
+    document.getElementById('decrypted-output').textContent =
+        `Decoded Italian:\n${decodedIt}\n\nDecoded English:\n${decodedEn}`;
+
+    renderLetterChart(computeLetterCounts(sampleText), 'literature-chart');
+</script>
