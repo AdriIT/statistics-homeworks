@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Homework 2</title>
+  <title>Laboratorio Interattivo - Dataset e Distribuzioni</title>
   <style>
     body {
       font-family: 'Inter', system-ui, sans-serif;
@@ -50,7 +50,12 @@
       transition: 0.3s;
     }
     button:hover { background: #56b8e8; }
-    canvas { background: #111a2b; display: block; margin: 10px auto; border-radius: 10px; }
+    canvas {
+      background: #111a2b;
+      display: block;
+      margin: 10px auto;
+      border-radius: 10px;
+    }
     footer {
       text-align: center;
       color: #9aa6b2;
@@ -67,70 +72,74 @@
 </header>
 
 <section>
-  <h2>1. Cosa sono Dataset e Distribuzioni</h2>
-  <p>Un <strong>dataset</strong> rappresenta una collezione di informazioni, spesso organizzate in righe e colonne, che descrivono un fenomeno o un insieme di eventi. Ogni record contiene una o più variabili osservabili, come utenti, tentativi di accesso o misure di rete.</p>
-  <p>Una <strong>distribuzione statistica</strong> invece mostra come i valori di una variabile si distribuiscono nel dataset: quali sono più frequenti, quali rari e come si comportano nel tempo.</p>
-  <ul>
-    <li>Il dataset fornisce i dati grezzi per l’analisi.</li>
-    <li>La distribuzione ne rivela l’andamento e i pattern nascosti.</li>
-    <li>Insieme, permettono di riconoscere comportamenti anomali e stimare rischi.</li>
-  </ul>
-</section>
+  <h2>1. Descrizione del Dataset</h2>
+  <p>Il dataset rappresenta un insieme di dati osservati da un sistema informatico reale o simulato.  
+  Ogni riga contiene le informazioni relative a un tentativo di accesso, indicando l’utente, il paese d’origine, il browser utilizzato e l’esito del tentativo.</p>
 
-<section>
-  <h2>2. Analisi di un Dataset</h2>
-  <p>Qui sotto puoi osservare un esempio semplificato di dataset legato ai tentativi di accesso a un sistema. Attraverso query SQL simulate, è possibile esplorare le distribuzioni dei valori e ricavarne statistiche.</p>
+  <ul>
+    <li><strong>UserID</strong>: identificativo numerico dell’utente.</li>
+    <li><strong>Country</strong>: paese da cui proviene il login.</li>
+    <li><strong>Browser</strong>: applicazione usata per accedere.</li>
+    <li><strong>Success</strong>: indica se l’accesso è riuscito (1) o fallito (0).</li>
+  </ul>
 
   <table id="LoginAttempts" border="1" style="width:100%; text-align:center; border-collapse:collapse; margin-top:10px;">
     <thead style="background:#111a2b;">
-      <tr><th>UserID</th><th>LoginHour</th><th>Success</th></tr>
+      <tr><th>UserID</th><th>Country</th><th>Browser</th><th>Success</th></tr>
     </thead>
     <tbody>
-      <tr><td>1</td><td>8</td><td>1</td></tr>
-      <tr><td>1</td><td>9</td><td>0</td></tr>
-      <tr><td>2</td><td>10</td><td>0</td></tr>
-      <tr><td>2</td><td>10</td><td>1</td></tr>
-      <tr><td>3</td><td>11</td><td>1</td></tr>
-      <tr><td>3</td><td>11</td><td>0</td></tr>
-      <tr><td>3</td><td>12</td><td>1</td></tr>
+      <tr><td>1</td><td>Italy</td><td>Chrome</td><td>1</td></tr>
+      <tr><td>2</td><td>Germany</td><td>Firefox</td><td>0</td></tr>
+      <tr><td>1</td><td>Italy</td><td>Edge</td><td>0</td></tr>
+      <tr><td>3</td><td>USA</td><td>Chrome</td><td>1</td></tr>
+      <tr><td>2</td><td>Germany</td><td>Safari</td><td>1</td></tr>
+      <tr><td>4</td><td>France</td><td>Chrome</td><td>0</td></tr>
+      <tr><td>3</td><td>USA</td><td>Firefox</td><td>1</td></tr>
     </tbody>
   </table>
 
   <label for="columnSelect">Seleziona la colonna per la distribuzione:</label>
   <select id="columnSelect">
-    <option value="UserID">UserID</option>
-    <option value="LoginHour">LoginHour</option>
+    <option value="Country">Country</option>
+    <option value="Browser">Browser</option>
     <option value="Success">Success</option>
   </select>
-
   <button onclick="computeDistribution()">Calcola distribuzione</button>
   <pre id="sqlOutput" style="white-space:pre-wrap; background:#111a2b; padding:10px; border-radius:10px;"></pre>
   <div id="tableResult"></div>
 </section>
 
 <section>
-  <h2>3. Distribuzione delle Lettere nei Testi</h2>
-  <p>Le distribuzioni non si applicano solo ai numeri. Anche i testi presentano schemi statistici ricorrenti. Analizzando la frequenza delle lettere, è possibile riconoscere lo stile linguistico di un autore o addirittura decifrare messaggi cifrati.</p>
-
-  <select id="textSelect" onchange="analyzeText()">
-    <option value="holden">“Il giovane Holden”</option>
-    <option value="alice">“Alice nel Paese delle Meraviglie”</option>
-    <option value="wuthering">“Cime Tempestose”</option>
-  </select>
-
-  <canvas id="chartLetters" width="600" height="200"></canvas>
+  <h2>2. Descrizione della Distribuzione</h2>
+  <p>Una <strong>distribuzione</strong> descrive come si ripetono i valori all’interno del dataset.  
+  Ad esempio, osservando la distribuzione dei browser usati o dei paesi da cui avvengono gli accessi, è possibile identificare tendenze o anomalie.</p>
+  <p>Le distribuzioni sono fondamentali in cybersecurity perché permettono di riconoscere comportamenti sospetti, come accessi ripetuti da una stessa area geografica o da un browser insolito.</p>
 </section>
 
 <section>
-  <h2>4. Cifrario di Cesare e Analisi Statistica</h2>
-  <p>Il <strong>cifrario di Cesare</strong> è uno dei metodi di cifratura più antichi: ogni lettera del messaggio viene spostata di un numero fisso di posizioni nell’alfabeto.  
-  Conoscendo la distribuzione delle lettere, è possibile tentare di decifrare automaticamente il testo attraverso <em>frequency analysis</em>.</p>
+  <h2>3. Distribuzione delle Parole nei Testi</h2>
+  <p>Le distribuzioni non si applicano solo ai numeri: anche i testi mostrano schemi statistici.  
+  In questo esempio analizziamo la <strong>frequenza delle parole</strong> in brevi estratti legati alla sicurezza informatica.</p>
+
+  <select id="textSelect" onchange="analyzeText()">
+    <option value="phishing">E-mail di phishing</option>
+    <option value="password">Messaggio su password</option>
+    <option value="firewall">Avviso di firewall</option>
+  </select>
+
+  <canvas id="chartWords" width="600" height="200"></canvas>
+</section>
+
+<section>
+  <h2>4. Cifrario di Cesare: Applicazione Pratica</h2>
+  <p>Il <strong>cifrario di Cesare</strong> sposta ogni lettera del messaggio di un numero fisso di posizioni nell’alfabeto.  
+  Di seguito puoi provare a cifrare e decifrare una frase legata al tema della sicurezza digitale.</p>
 
   <label for="cipherInput">Testo da cifrare:</label>
-  <textarea id="cipherInput" rows="3" placeholder="Scrivi qui il tuo testo...">security is power</textarea>
+  <textarea id="cipherInput" rows="3" placeholder="Scrivi qui il testo...">password leaks are dangerous</textarea>
 
   <label for="shiftInput">Spostamento (shift):</label>
-  <input type="number" id="shiftInput" value="3" min="1" max="25" />
+  <input type="number" id="shiftInput" value="4" min="1" max="25" />
 
   <button onclick="encryptText()">Cifra</button>
   <textarea id="encryptedOutput" rows="3" readonly></textarea>
@@ -146,22 +155,18 @@
   <canvas id="cipherChart" width="600" height="200"></canvas>
 </section>
 
-<section>
-  <h2>5. Cosa Abbiamo Appreso</h2>
-  <ul>
-    <li>Un dataset rappresenta i dati da cui partono le analisi.</li>
-    <li>Le distribuzioni statistiche rivelano pattern nascosti nei dati e nei testi.</li>
-    <li>La crittografia, seppur antica, mostra come la matematica e le statistiche possano rivelare o proteggere l’informazione.</li>
-  </ul>
-</section>
+<footer>
+  © 2025 – Laboratorio Interattivo di Statistica e Cybersecurity
+</footer>
 
 <script>
 function computeDistribution() {
   const col = document.getElementById('columnSelect').value;
   const rows = document.querySelectorAll('#LoginAttempts tbody tr');
+  const colIndex = {UserID:1, Country:2, Browser:3, Success:4}[col];
   const data = {};
   rows.forEach(r => {
-    const value = r.querySelector(`td:nth-child(${col === 'UserID' ? 1 : col === 'LoginHour' ? 2 : 3})`).textContent;
+    const value = r.querySelector(`td:nth-child(${colIndex})`).textContent;
     data[value] = (data[value] || 0) + 1;
   });
   let resultHTML = '<table border="1" style="width:100%; border-collapse:collapse; text-align:center;"><tr><th>' + col + '</th><th>Conteggio</th></tr>';
@@ -172,32 +177,33 @@ function computeDistribution() {
 }
 
 const texts = {
-  holden: "If you really want to hear about it, the first thing you'll probably want to know is where I was born...",
-  alice: "Alice was beginning to get very tired of sitting by her sister on the bank...",
-  wuthering: "1801. I have just returned from a visit to my landlord—the solitary neighbour that I shall be troubled with..."
+  phishing: "Dear user your account is suspended please click here to verify your login information",
+  password: "Always use strong passwords and avoid reusing the same one on multiple sites",
+  firewall: "Firewall blocked multiple unauthorized attempts to access the system"
 };
 
 function analyzeText() {
   const key = document.getElementById('textSelect').value;
-  const txt = texts[key].toUpperCase().replace(/[^A-Z]/g, '');
+  const words = texts[key].toLowerCase().split(/\W+/).filter(w => w.length > 2);
   const freq = {};
-  for (let ch of txt) freq[ch] = (freq[ch] || 0) + 1;
-  renderChart(freq, 'chartLetters');
+  for (let w of words) freq[w] = (freq[w] || 0) + 1;
+  renderChart(freq, 'chartWords');
 }
 
 function renderChart(freq, canvasId) {
   const canvas = document.getElementById(canvasId);
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  const letters = Object.keys(freq).sort();
+  const labels = Object.keys(freq);
   const max = Math.max(...Object.values(freq));
-  const barWidth = canvas.width / letters.length;
-  letters.forEach((l,i)=>{
-    const h = (freq[l]/max)*canvas.height*0.9;
+  const barWidth = canvas.width / labels.length;
+  labels.forEach((l,i)=>{
+    const h = (freq[l]/max)*canvas.height*0.85;
     ctx.fillStyle = '#7dd3fc';
     ctx.fillRect(i*barWidth, canvas.height - h, barWidth-2, h);
-    ctx.fillStyle = '#9aa6b2';
-    ctx.fillText(l, i*barWidth + 4, canvas.height - 4);
+    ctx.fillStyle = 'black';
+    ctx.font = '12px sans-serif';
+    ctx.fillText(l, i*barWidth + 3, canvas.height - 5);
   });
 }
 
