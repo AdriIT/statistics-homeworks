@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interactive Statistics: Dataset & Distribution</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Homework 2 - Dataset e Distribution</title>
 <style>
 :root {
     --bg: #0f1724;
@@ -11,267 +11,522 @@
     --muted: #9aa6b2;
     --accent: #7dd3fc;
     --radius: 14px;
-    --bar-color: #800020;
+    --bar-color: #7dd3fc;
     --number-color: #ffffff;
     --letter-color: #000000;
 }
+* { box-sizing: border-box; }
 body {
     font-family: 'Inter', sans-serif;
     background: var(--bg);
     color: #e6eef6;
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 20px;
 }
-.wrap {
-    max-width: 950px;
-    margin:0 auto;
-    padding:20px;
-}
-h1,h2,h3,h4 { color: var(--accent); }
+.wrap { max-width: 950px; margin: 0 auto; }
+h1,h2,h3,h4 { color: var(--accent); margin: 0 0 10px 0; }
+p { color: #d5dde6; margin: 0 0 12px 0; }
+
 .card {
     background: var(--card);
     border-radius: var(--radius);
-    padding:20px;
-    margin-bottom:20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.05) inset;
 }
+
+/* Tables */
 table {
-    width:100%;
+    width: 100%;
     border-collapse: collapse;
-    margin:10px 0;
+    margin: 10px 0;
 }
 th, td {
-    border:1px solid #777;
-    padding:6px 10px;
-    text-align:center;
+    border: 1px solid #777;
+    padding: 6px 10px;
+    text-align: center;
 }
-th { background: var(--accent); color:#000; }
-.bar-row { display:flex; align-items:center; margin:4px 0; }
-.bar-label { width:28px; color: var(--letter-color); font-weight:600; }
-.bar-wrap { flex:1; background: rgba(255,255,255,0.05); border-radius:4px; margin:0 8px; }
-.bar-fill { height:18px; border-radius:4px; background: var(--bar-color); }
-.bar-value { width:48px; text-align:right; color: var(--number-color); font-weight:600; }
-input[type=number] { width:60px; }
-select, button { margin-left:6px; padding:4px 6px; border-radius:4px; border:none; }
-textarea { width:100%; background:rgba(0,0,0,0.2); color:#fff; padding:0.5rem; border-radius:6px; }
+th { background: var(--accent); color: #000; }
+
+/* Form elements */
+input[type=number] {
+    width: 72px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+input[type=checkbox] {
+    margin-right: 5px;
+}
+
+textarea {
+    width: 100%;
+    background: rgba(0,0,0,0.2);
+    color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    resize: vertical;
+    font-size: 15px;
+    font-family: inherit;
+}
+
+button {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    margin-left: 6px;
+}
+button:hover { filter: brightness(0.95); }
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    align-items: center;
+    margin: 12px 0;
+}
+.button-group label { 
+    color: var(--muted); 
+    margin-left: 10px;
+    font-weight: 500;
+    user-select: none;
+}
+
+/* Bars for frequency display */
+.bar-row { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    margin: 4px 0; 
+}
+.bar-label { 
+    width: 28px; 
+    text-align: center; 
+    color: #cfd7df; 
+    font-weight: 700; 
+}
+.bar-wrap { 
+    flex: 1; 
+    height: 18px; 
+    background: rgba(255,255,255,0.06); 
+    border-radius: 5px; 
+    overflow: hidden; 
+}
+.bar-fill { 
+    height: 100%; 
+    background: var(--bar-color); 
+}
+.bar-value { 
+    width: 48px; 
+    text-align: right; 
+    color: var(--number-color); 
+    font-weight: 700; 
+}
+
+/* Language output panels */
+.lang-outputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+}
+.lang-card {
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    padding: 14px;
+}
+.lang-meta {
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+/* Brute force list */
+.brute-list {
+    max-height: 400px;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 10px;
+}
+.brute-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 14px;
+}
+.shift-badge {
+    min-width: 50px;
+    text-align: center;
+    font-weight: 800;
+    background: rgba(125,211,252,0.25);
+    color: #fff;
+    border-radius: 6px;
+    padding: 3px 6px;
+    font-size: 12px;
+}
+.decode-text {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    background: rgba(0,0,0,0.15);
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #e0e0e0;
+}
+
+@media (max-width: 820px) {
+    .lang-outputs { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header>
-<h1>Interactive Statistics: Dataset & Distribution</h1>
-<p>Learn how datasets and distributions work with practical examples and interactive visualizations.</p>
-</header>
+    <header>
+        <h1>Interactive Statistics: Dataset & Distribution</h1>
+        <p>Learn how datasets and distributions work with practical examples and interactive visualizations.</p>
+    </header>
 
-<div class="card">
-<h2>1. What is a Dataset?</h2>
-<p>A <strong>dataset</strong> is a structured collection of data organized in rows (observations) and columns (variables). It is the foundation for statistical analysis.</p>
+    <div class="card">
+        <h2>1. What is a Dataset?</h2>
+        <p>A <strong>dataset</strong> is a structured collection of data organized in rows (observations) and columns (variables). It is the foundation for statistical analysis.</p>
+    </div>
+
+    <div class="card">
+        <h2>2. What is a Distribution?</h2>
+        <p>A <strong>distribution</strong> describes how values of a variable are spread. It can be visualized as frequencies, probabilities, or histograms to detect patterns or anomalies.</p>
+    </div>
+
+    <div class="card">
+        <h2>3. Example Dataset: Browser Visits by Country</h2>
+        <p>We track website visits by users with variables: <strong>Browser</strong>, <strong>Country</strong>, and <strong>Success</strong> (login).</p>
+        <table id="dataset1">
+            <tr><th>Browser</th><th>Country</th><th>Success</th></tr>
+            <tr><td>Chrome</td><td>Italy</td><td>1</td></tr>
+            <tr><td>Firefox</td><td>Italy</td><td>1</td></tr>
+            <tr><td>Chrome</td><td>USA</td><td>0</td></tr>
+            <tr><td>Safari</td><td>UK</td><td>1</td></tr>
+            <tr><td>Chrome</td><td>Italy</td><td>0</td></tr>
+            <tr><td>Firefox</td><td>USA</td><td>1</td></tr>
+        </table>
+        
+        <h4>Compute Univariate Distribution</h4>
+        <form id="uni-form">
+            <label><input type="checkbox" name="vars" value="Browser" checked> Browser</label>
+            <label><input type="checkbox" name="vars" value="Country"> Country</label>
+            <label><input type="checkbox" name="vars" value="Success"> Success</label>
+            <button type="submit">Compute Univariate Distribution</button>
+        </form>
+        <div id="uni-table-wrap"></div>
+    </div>
+
+    <div class="card">
+        <h2>4. Bivariate Distribution</h2>
+        <p>Select exactly two variables to compute joint frequencies:</p>
+        <form id="bi-form">
+            <label><input type="checkbox" name="vars" value="Browser" checked> Browser</label>
+            <label><input type="checkbox" name="vars" value="Country" checked> Country</label>
+            <label><input type="checkbox" name="vars" value="Success"> Success</label>
+            <button type="submit">Compute Bivariate Distribution</button>
+        </form>
+        <div id="bi-table-wrap"></div>
+    </div>
+
+    <div class="card">
+        <h2>5. Caesar Cipher - Due Output Linguistici + Brute Force</h2>
+        <p>Scrivi un testo, cifralo, poi decodifica con algoritmi separati per Italiano ed English, più lista completa brute force.</p>
+
+        <textarea id="cipher-input" rows="6">Hello</textarea>
+
+        <div class="button-group">
+            <label>Shift: 
+                <input type="number" id="cipher-shift" value="1" min="0" max="25">
+            </label>
+            <button id="btn-encrypt">Encrypt</button>
+            <button id="btn-decode-lang">Decode by Languages</button>
+            <button id="btn-bruteforce">Brute-force Decode</button>
+        </div>
+
+        <h4>Frequenze lettere (cipher)</h4>
+        <div id="cipher-bars"></div>
+
+        <h4>Testo cifrato</h4>
+        <textarea id="cipher-output" rows="3" readonly></textarea>
+
+        <h3>Output linguistici distinti</h3>
+        <div class="lang-outputs">
+            <div class="lang-card">
+                <h4>🇮🇹 Italiano</h4>
+                <div class="lang-meta">Shift stimato: <span id="it-shift">-</span></div>
+                <textarea id="it-decoded" rows="4" readonly></textarea>
+            </div>
+
+            <div class="lang-card">
+                <h4>🇺🇸 English</h4>
+                <div class="lang-meta">Estimated shift: <span id="en-shift">-</span></div>
+                <textarea id="en-decoded" rows="4" readonly></textarea>
+            </div>
+        </div>
+
+        <h3>Brute Force (26 tentativi)</h3>
+        <details>
+            <summary>Mostra/Nascondi tutti i 26 shift</summary>
+            <div id="brute-results" class="brute-list"></div>
+        </details>
+    </div>
 </div>
 
-<div class="card">
-<h2>2. What is a Distribution?</h2>
-<p>A <strong>distribution</strong> describes how values of a variable are spread. It can be visualized as frequencies, probabilities, or histograms to detect patterns or anomalies.</p>
-</div>
-
-<div class="card">
-<h2>3. Example Dataset: Browser Visits by Country</h2>
-<p>We track website visits by users with variables: <strong>Browser</strong>, <strong>Country</strong>, and <strong>Success</strong> (login).</p>
-<table id="dataset1">
-<tr><th>Browser</th><th>Country</th><th>Success</th></tr>
-<tr><td>Chrome</td><td>Italy</td><td>1</td></tr>
-<tr><td>Firefox</td><td>Italy</td><td>1</td></tr>
-<tr><td>Chrome</td><td>USA</td><td>0</td></tr>
-<tr><td>Safari</td><td>UK</td><td>1</td></tr>
-<tr><td>Chrome</td><td>Italy</td><td>0</td></tr>
-<tr><td>Firefox</td><td>USA</td><td>1</td></tr>
-</table>
-<form id="uni-form">
-<label><input type="checkbox" name="vars" value="Browser" checked> Browser</label>
-<label><input type="checkbox" name="vars" value="Country"> Country</label>
-<label><input type="checkbox" name="vars" value="Success"> Success</label>
-<button>Compute Univariate Distribution</button>
-</form>
-<div id="uni-table-wrap"></div>
-</div>
-
-<div class="card">
-<h2>4. Bivariate Distribution</h2>
-<p>Select two variables to compute joint frequencies:</p>
-<form id="bi-form">
-<label><input type="checkbox" name="vars" value="Browser" checked> Browser</label>
-<label><input type="checkbox" name="vars" value="Country" checked> Country</label>
-<button>Compute Bivariate Distribution</button>
-</form>
-<div id="bi-table-wrap"></div>
-</div>
-
-<div class="card">
-<h2>5. Letter Distribution & Caesar Cipher</h2>
-<p>Type a text below, compute the letter distribution, apply Caesar cipher, then decode automatically using brute-force and language frequencies.</p>
-<textarea id="text-input" rows="6">Voglio bere il latte e poi guardare il browser in Italia.</textarea>
-<div style="margin-top:0.5rem;">
-<label>Shift: <input type="number" id="shift" value="3" min="0" max="25"></label>
-<button id="encrypt-btn">Encrypt</button>
-<button id="brute-btn">Brute-force Decode</button>
-<select id="lang-select">
-<option value="italian" selected>Italian</option>
-<option value="english">English</option>
-</select>
-<button id="lang-decode">Decode using Language</button>
-</div>
-<h4>Letter Distribution</h4>
-<div id="letter-chart"></div>
-<h4>Encrypted Text</h4>
-<pre id="encrypted-text" style="background:rgba(0,0,0,0.2);padding:0.5rem;border-radius:4px;"></pre>
-<h4>Decoded Text (Brute-force)</h4>
-<pre id="brute-text" style="background:rgba(0,0,0,0.2);padding:0.5rem;border-radius:4px;"></pre>
-<h4>Decoded Text (Language)</h4>
-<pre id="lang-text" style="background:rgba(0,0,0,0.2);padding:0.5rem;border-radius:4px;"></pre>
-</div>
-
-</div>
 <script>
-// -------------------- Dataset Helpers --------------------
-function readTable(tableId){
+/* === Dataset Processing Functions === */
+function readTable(tableId) {
     const table = document.getElementById(tableId);
-    const rows = Array.from(table.querySelectorAll('tr')).slice(1);
-    const data = rows.map(r => {
-        const cells = r.querySelectorAll('td');
-        return {
-            Browser: cells[0].textContent,
-            Country: cells[1].textContent,
-            Success: Number(cells[2].textContent)
-        };
-    });
+    const rows = Array.from(table.rows);
+    const headers = Array.from(rows[0].cells).map(cell => cell.textContent.trim());
+    const data = [];
+    
+    for (let i = 1; i < rows.length; i++) {
+        const obj = {};
+        const cells = Array.from(rows[i].cells);
+        for (let j = 0; j < headers.length; j++) {
+            obj[headers[j]] = cells[j].textContent.trim();
+        }
+        data.push(obj);
+    }
     return data;
 }
 
-function groupCounts(data, keys){
-    const map = new Map();
-    data.forEach(r=>{
-        const k = JSON.stringify(keys.map(kk=>r[kk]));
-        map.set(k,(map.get(k)||0)+1);
+function groupCounts(data, keys) {
+    const groups = {};
+    data.forEach(row => {
+        const keyStr = keys.map(k => row[k]).join('|');
+        groups[keyStr] = (groups[keyStr] || 0) + 1;
     });
-    return Array.from(map.entries()).map(([k,v])=>{
-        const obj={};
-        JSON.parse(k).forEach((val,i)=>obj[keys[i]]=val);
-        obj.Frequency=v;
+    
+    return Object.entries(groups).map(([key, count]) => {
+        const values = key.split('|');
+        const obj = {};
+        keys.forEach((k, i) => obj[k] = values[i]);
+        obj.Frequency = count;
         return obj;
     });
 }
 
-function renderTable(data, containerId, keys){
-    const wrap = document.getElementById(containerId);
-    wrap.innerHTML='';
-    const table = document.createElement('table');
-    const tr = document.createElement('tr');
-    keys.concat(['Frequency']).forEach(k=>{
-        const th = document.createElement('th'); th.textContent=k; tr.appendChild(th);
+function renderTable(data, containerId, columns) {
+    const container = document.getElementById(containerId);
+    if (data.length === 0) {
+        container.innerHTML = '<p>No data to display</p>';
+        return;
+    }
+    
+    const allColumns = columns.concat(['Frequency']);
+    let html = '<table><tr>';
+    allColumns.forEach(col => html += `<th>${col}</th>`);
+    html += '</tr>';
+    
+    data.forEach(row => {
+        html += '<tr>';
+        allColumns.forEach(col => html += `<td>${row[col] || ''}</td>`);
+        html += '</tr>';
     });
-    table.appendChild(tr);
-    data.forEach(r=>{
-        const tr = document.createElement('tr');
-        keys.concat(['Frequency']).forEach(k=>{
-            const td = document.createElement('td'); td.textContent=r[k]; tr.appendChild(td);
-        });
-        table.appendChild(tr);
-    });
-    wrap.appendChild(table);
+    html += '</table>';
+    
+    container.innerHTML = html;
 }
 
-// Univariate
-document.getElementById('uni-form').addEventListener('submit', e=>{
-    e.preventDefault();
-    const keys = Array.from(document.querySelectorAll('#uni-form input[name=vars]:checked')).map(x=>x.value);
-    if(keys.length===0) return;
-    const data = readTable('dataset1');
-    const result = groupCounts(data, keys.slice(0,3));
-    renderTable(result,'uni-table-wrap',keys.slice(0,3));
-});
-
-// Bivariate
-document.getElementById('bi-form').addEventListener('submit', e=>{
-    e.preventDefault();
-    const keys = Array.from(document.querySelectorAll('#bi-form input[name=vars]:checked')).map(x=>x.value);
-    if(keys.length!==2) return alert('Select exactly 2 variables');
-    const data = readTable('dataset1');
-    const result = groupCounts(data, keys);
-    renderTable(result,'bi-table-wrap',keys);
-});
-
-// -------------------- Letter Distribution & Caesar --------------------
-function countLetters(text){
-    const counts={};
-    for(let i=0;i<26;i++) counts[String.fromCharCode(65+i)]=0;
-    text.toUpperCase().split('').forEach(ch=>{
-        if(ch>='A' && ch<='Z') counts[ch]++;
+/* === Caesar Cipher Functions === */
+function countLetters(text) {
+    const counts = {};
+    for (let i = 0; i < 26; i++) counts[String.fromCharCode(65 + i)] = 0;
+    text.toUpperCase().split('').forEach(ch => {
+        if (ch >= 'A' && ch <= 'Z') counts[ch]++;
     });
     return counts;
 }
 
-function renderBar(counts, container){
-    container.innerHTML='';
-    Object.entries(counts).forEach(([letter,value])=>{
-        const row=document.createElement('div'); row.className='bar-row';
-        const lbl=document.createElement('div'); lbl.className='bar-label'; lbl.textContent=letter;
-        const wrap=document.createElement('div'); wrap.className='bar-wrap';
-        const fill=document.createElement('div'); fill.className='bar-fill'; fill.style.width=(value*5)+'px';
+function renderBars(counts, container) {
+    container.innerHTML = '';
+    const max = Math.max(1, ...Object.values(counts));
+    Object.entries(counts).forEach(([letter, value]) => {
+        const row = document.createElement('div');
+        row.className = 'bar-row';
+        
+        const lbl = document.createElement('div');
+        lbl.className = 'bar-label';
+        lbl.textContent = letter;
+        
+        const wrap = document.createElement('div');
+        wrap.className = 'bar-wrap';
+        
+        const fill = document.createElement('div');
+        fill.className = 'bar-fill';
+        fill.style.width = (value / max * 100) + '%';
+        
+        const val = document.createElement('div');
+        val.className = 'bar-value';
+        val.textContent = value;
+        
         wrap.appendChild(fill);
-        const val=document.createElement('div'); val.className='bar-value'; val.textContent=value;
-        row.appendChild(lbl); row.appendChild(wrap); row.appendChild(val);
+        row.appendChild(lbl);
+        row.appendChild(wrap);
+        row.appendChild(val);
         container.appendChild(row);
     });
 }
 
-function caesarShift(text,shift){
-    return text.split('').map(ch=>{
-        const c=ch.charCodeAt(0);
-        if(c>=65 && c<=90) return String.fromCharCode((c-65+shift)%26+65);
-        if(c>=97 && c<=122) return String.fromCharCode((c-97+shift)%26+97);
+function caesarShift(text, shift) {
+    return text.split('').map(ch => {
+        const c = ch.charCodeAt(0);
+        if (c >= 65 && c <= 90) return String.fromCharCode((c - 65 + shift + 26) % 26 + 65);
+        if (c >= 97 && c <= 122) return String.fromCharCode((c - 97 + shift + 26) % 26 + 97);
         return ch;
     }).join('');
 }
 
-function bruteForceDecrypt(cipher){
-    const results=[];
-    for(let s=0;s<26;s++) results.push(caesarShift(cipher,26-s));
-    return results;
-}
-
-// Language frequency based
-const langFreq={
-    italian:{A:11.7,B:0.9,C:4.5,D:3.7,E:11.8,F:1.2,G:1.6,H:0.6,I:10.1,L:6.5,M:2.5,N:6.9,O:9.8,P:3.0,Q:0.5,R:6.0,S:4.9,T:5.0,U:3.6,V:2.0,Z:1.2},
-    english:{A:8.2,B:1.5,C:2.8,D:4.3,E:12.7,F:2.2,G:2.0,H:6.1,I:7.0,J:0.15,K:0.77,L:4.0,M:2.4,N:6.7,O:7.5,P:1.9,Q:0.095,R:6.0,S:6.3,T:9.1,U:2.8,V:0.98,W:2.4,X:0.15,Y:2.0,Z:0.074}
+/* === Language profiles === */
+const langProfiles = {
+    italian: {A:11.74,B:0.92,C:4.50,D:3.73,E:11.79,F:1.01,G:1.65,H:0.64,I:10.14,J:0.02,K:0.02,L:6.51,M:2.51,N:6.88,O:9.83,P:3.05,Q:0.51,R:6.37,S:4.98,T:5.62,U:3.01,V:2.10,W:0.02,X:0.02,Y:0.02,Z:1.18},
+    english: {A:8.12,B:1.49,C:2.78,D:4.25,E:12.02,F:2.23,G:2.02,H:6.09,I:6.97,J:0.15,K:0.77,L:4.03,M:2.41,N:6.75,O:7.51,P:1.93,Q:0.10,R:5.99,S:6.33,T:9.06,U:2.76,V:0.98,W:2.36,X:0.15,Y:1.97,Z:0.07}
 };
 
-function decodeWithLang(cipher,lang){
-    const freq=langFreq[lang];
-    const counts=countLetters(cipher);
-    const sortedCipher=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
-    const sortedLang=Object.entries(freq).sort((a,b)=>b[1]-a[1]);
-    const shift=(sortedCipher[0][0].charCodeAt(0)-sortedLang[0][0].charCodeAt(0)+26)%26;
-    return caesarShift(cipher,26-shift);
+function calculateChiSquare(observedCounts, expectedProfile) {
+    const totalCount = Object.values(observedCounts).reduce((a, b) => a + b, 0);
+    if (totalCount === 0) return Infinity;
+    
+    let chiSquare = 0;
+    for (let i = 0; i < 26; i++) {
+        const letter = String.fromCharCode(65 + i);
+        const observed = observedCounts[letter] || 0;
+        const expectedFreq = expectedProfile[letter] || 0.01;
+        const expected = totalCount * (expectedFreq / 100);
+        
+        if (expected > 0) {
+            chiSquare += Math.pow(observed - expected, 2) / expected;
+        }
+    }
+    return chiSquare;
 }
 
-// Events
-document.getElementById('encrypt-btn').addEventListener('click',()=>{
-    const txt=document.getElementById('text-input').value;
-    const shift=Number(document.getElementById('shift').value);
-    const cipher=caesarShift(txt,shift);
-    document.getElementById('encrypted-text').textContent=cipher;
-    renderBar(countLetters(txt),document.getElementById('letter-chart'));
-});
+function findBestShiftForLanguage(cipherText, language) {
+    const profile = langProfiles[language];
+    let bestShift = 0;
+    let bestScore = Infinity;
+    
+    for (let shift = 0; shift < 26; shift++) {
+        const decoded = caesarShift(cipherText, (26 - shift) % 26);
+        const counts = countLetters(decoded);
+        const score = calculateChiSquare(counts, profile);
+        
+        if (score < bestScore) {
+            bestScore = score;
+            bestShift = shift;
+        }
+    }
+    
+    return bestShift;
+}
 
-document.getElementById('brute-btn').addEventListener('click',()=>{
-    const cipher=document.getElementById('encrypted-text').textContent;
-    const results=bruteForceDecrypt(cipher);
-    document.getElementById('brute-text').textContent=results.join('\n');
-});
+/* === Event Handlers === */
+(function setupEventHandlers() {
+    // Dataset handlers
+    document.getElementById('uni-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const keys = Array.from(document.querySelectorAll('#uni-form input[name=vars]:checked')).map(x => x.value);
+        if (keys.length === 0) return;
+        const data = readTable('dataset1');
+        const result = groupCounts(data, keys.slice(0, 3));
+        renderTable(result, 'uni-table-wrap', keys.slice(0, 3));
+    });
 
-document.getElementById('lang-decode').addEventListener('click',()=>{
-    const cipher=document.getElementById('encrypted-text').textContent;
-    const lang=document.getElementById('lang-select').value;
-    document.getElementById('lang-text').textContent=decodeWithLang(cipher,lang);
-});
+    document.getElementById('bi-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const keys = Array.from(document.querySelectorAll('#bi-form input[name=vars]:checked')).map(x => x.value);
+        if (keys.length !== 2) return alert('Select exactly 2 variables');
+        const data = readTable('dataset1');
+        const result = groupCounts(data, keys);
+        renderTable(result, 'bi-table-wrap', keys);
+    });
+
+    // Caesar cipher handlers
+    const inputEl = document.getElementById('cipher-input');
+    const shiftEl = document.getElementById('cipher-shift');
+    const outputEl = document.getElementById('cipher-output');
+    const barsEl = document.getElementById('cipher-bars');
+    
+    document.getElementById('btn-encrypt').addEventListener('click', () => {
+        const shift = Number(shiftEl.value) || 0;
+        const cipher = caesarShift(inputEl.value, shift);
+        outputEl.value = cipher;
+        
+        // Show cipher frequency bars
+        renderBars(countLetters(cipher), barsEl);
+        
+        // Clear previous results
+        document.getElementById('it-shift').textContent = '-';
+        document.getElementById('en-shift').textContent = '-';
+        document.getElementById('it-decoded').value = '';
+        document.getElementById('en-decoded').value = '';
+        document.getElementById('brute-results').innerHTML = '';
+    });
+    
+    document.getElementById('btn-decode-lang').addEventListener('click', () => {
+        const cipher = outputEl.value || caesarShift(inputEl.value, Number(shiftEl.value) || 0);
+        
+        // Italian analysis
+        const itShift = findBestShiftForLanguage(cipher, 'italian');
+        const itDecoded = caesarShift(cipher, (26 - itShift) % 26);
+        document.getElementById('it-shift').textContent = itShift;
+        document.getElementById('it-decoded').value = itDecoded;
+        
+        // English analysis  
+        const enShift = findBestShiftForLanguage(cipher, 'english');
+        const enDecoded = caesarShift(cipher, (26 - enShift) % 26);
+        document.getElementById('en-shift').textContent = enShift;
+        document.getElementById('en-decoded').value = enDecoded;
+        
+        // Update cipher bars
+        renderBars(countLetters(cipher), barsEl);
+    });
+    
+    document.getElementById('btn-bruteforce').addEventListener('click', () => {
+        const cipher = outputEl.value || caesarShift(inputEl.value, Number(shiftEl.value) || 0);
+        const bruteHost = document.getElementById('brute-results');
+        
+        bruteHost.innerHTML = '';
+        for (let s = 0; s < 26; s++) {
+            const decoded = caesarShift(cipher, (26 - s) % 26);
+            
+            const row = document.createElement('div');
+            row.className = 'brute-row';
+            
+            const badge = document.createElement('div');
+            badge.className = 'shift-badge';
+            badge.textContent = 's=' + s;
+            
+            const text = document.createElement('div');
+            text.className = 'decode-text';
+            text.textContent = decoded;
+            
+            row.appendChild(badge);
+            row.appendChild(text);
+            bruteHost.appendChild(row);
+        }
+    });
+    
+    // Initial render
+    renderBars(countLetters(inputEl.value), barsEl);
+})();
 </script>
 </body>
 </html>
