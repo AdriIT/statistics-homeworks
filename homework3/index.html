@@ -3,181 +3,223 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Homework 3: RSA Frequency Analysis</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<title>Homework 3 - RSA & Language Estimation</title>
 <style>
-  body { font-family: 'Roboto', sans-serif; background:#0f1724; color:#e6eef6; margin:0; padding:20px;}
-  .container { max-width:950px; margin:0 auto; display:flex; flex-direction:column; gap:20px;}
-  h1,h2,h3,h4 { color:#7dd3fc; margin:10px 0;}
-  input, textarea { width:100%; padding:10px; border-radius:10px; border:none; margin-bottom:12px; font-size:14px; background:rgba(0,0,0,0.2); color:#fff;}
-  button { padding:8px 14px; border:none; border-radius:10px; cursor:pointer; margin-right:8px; font-weight:700;}
-  .blue { background:#7dd3fc; color:#000; } .green { background:#22c55e; color:#000; } .orange { background:#f97316; color:#000; }
-  .card { background:#0b1220; border-radius:14px; padding:20px; display:flex; flex-direction:column; gap:12px; box-shadow:0 0 0 1px rgba(255,255,255,0.05) inset;}
-  .bar-group { display:flex; align-items:center; gap:6px; margin:3px 0; }
-  .bar-label { width:20px; text-align:center; color:#9aa6b2; font-weight:700; }
-  .bar-wrap { flex:1; height:16px; background:rgba(255,255,255,0.05); border-radius:6px; overflow:hidden; position:relative; }
-  .bar-fill { height:100%; background:#7dd3fc; }
-  .bar-value { position:absolute; right:4px; color:#fff; font-weight:700; font-size:12px; top:0; }
-  .home-link { display:inline-block; margin-bottom:20px; color:#7dd3fc; text-decoration:none; font-weight:700; }
-  .section-buttons { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px; }
-  .result-box { background:rgba(255,255,255,0.05); padding:12px; border-radius:10px; }
+:root {
+    --bg: #0f1724;
+    --card: #0b1220;
+    --muted: #9aa6b2;
+    --accent: #7dd3fc;
+    --radius: 14px;
+    --bar-color: #7dd3fc;
+}
+* { box-sizing: border-box; }
+body {
+    font-family: 'Roboto', sans-serif;
+    background: var(--bg);
+    color: #e6eef6;
+    margin: 0;
+    padding: 20px;
+}
+.wrap { max-width: 1000px; margin: 0 auto; }
+h1,h2,h3,h4 { color: var(--accent); margin-bottom: 10px; }
+p { color: #d5dde6; margin-bottom: 12px; }
+
+.card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+input[type=number], textarea {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    padding: 6px 8px;
+    font-family: inherit;
+}
+textarea { width: 100%; resize: vertical; font-size: 15px; }
+
+button {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    margin: 4px 2px;
+}
+button:hover { filter: brightness(0.9); }
+
+.bar-row { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+.bar-label { width: 28px; text-align: center; color: #cfd7df; font-weight: 700; }
+.bar-wrap { flex: 1; height: 18px; background: rgba(255,255,255,0.06); border-radius: 5px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--bar-color); }
+.bar-value { width: 48px; text-align: right; color: #fff; font-weight: 700; }
+
+.brute-list { max-height: 300px; overflow-y: auto; background: rgba(0,0,0,0.1); border-radius: 8px; padding: 10px; }
+.brute-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
+.shift-badge { min-width: 50px; text-align: center; font-weight: 800; background: rgba(125,211,252,0.25); color: #fff; border-radius: 6px; padding: 3px 6px; font-size: 12px; }
+.decode-text { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; background: rgba(0,0,0,0.15); padding: 4px 8px; border-radius: 4px; color: #e0e0e0; }
+
+.home-link { color: var(--accent); display: inline-block; margin-bottom: 16px; text-decoration: none; font-weight: 700; }
+.home-link:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
-<div class="container">
-  <a class="home-link" href="index.html">🏠 Home</a>
-  <h1>Homework 3: RSA Frequency Analysis</h1>
+<div class="wrap">
+    <a href="../index.html" class="home-link">Home</a>
+    <header>
+        <h1>Homework 3: RSA & Language Estimation</h1>
+    </header>
 
-  <!-- RSA Parameters -->
-  <div class="card">
-    <h2>1. RSA Parameters</h2>
-    <label>Prime p:<input type="number" id="p-val" value="61" min="2"></label>
-    <label>Prime q:<input type="number" id="q-val" value="53" min="2"></label>
-    <label>Public exponent e:<input type="number" id="e-val" value="17" min="2"></label>
-    <div class="section-buttons">
-      <button id="btn-generate-keys" class="blue">Generate Keys</button>
+    <div class="card">
+        <h2>Introduction</h2>
+        <p>This interactive page demonstrates a simple RSA encryption/decryption algorithm using small prime numbers for educational purposes. Users can input primes <strong>p</strong> and <strong>q</strong>, and a public exponent <strong>e</strong> to generate RSA keys. Text can then be encrypted with the public key and decrypted using the private key.</p>
+        <p>Additionally, the decrypted text can be analyzed for letter frequency distribution to estimate the most likely language (Italian or English) based on typical alphabet usage.</p>
     </div>
-    <div class="result-box" id="key-display"></div>
-  </div>
 
-  <!-- Encryption -->
-  <div class="card">
-    <h2>2. Text Encryption</h2>
-    <textarea id="rsa-input" rows="3">HELLO WORLD</textarea>
-    <div class="section-buttons">
-      <button id="btn-encrypt" class="blue">Encrypt with RSA</button>
+    <div class="card">
+        <h2>1. RSA Parameters</h2>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+            <div>
+                <label for="rsa-p">Prime p:</label><br>
+                <input type="number" id="rsa-p" value="61" min="2">
+            </div>
+            <div>
+                <label for="rsa-q">Prime q:</label><br>
+                <input type="number" id="rsa-q" value="53" min="2">
+            </div>
+            <div>
+                <label for="rsa-e">Public exponent e:</label><br>
+                <input type="number" id="rsa-e" value="17" min="2">
+            </div>
+            <button id="btn-gen-keys" style="background-color:#7dd3fc; color:#000;">Generate Keys</button>
+        </div>
+        <div id="rsa-keys" style="margin-top: 10px;"></div>
     </div>
-    <div class="result-box"><strong>Ciphertext:</strong> <span id="rsa-output"></span></div>
-  </div>
 
-  <!-- Decryption with Private Key -->
-  <div class="card">
-    <h2>3. Decryption with Private Key</h2>
-    <div class="section-buttons">
-      <button id="btn-decrypt-key" class="blue">Decrypt with Private Key</button>
+    <div class="card">
+        <h2>2. Enter Text to Encrypt</h2>
+        <textarea id="text-input" rows="3">hello world</textarea>
+        <button id="btn-encrypt" style="background-color:#7dd3fc; color:#000;">Encrypt</button>
+        <div style="margin-top:10px;">
+            <h4>Encrypted Text:</h4>
+            <textarea id="cipher-output" rows="3" readonly></textarea>
+        </div>
     </div>
-    <div class="result-box"><strong>Decrypted text:</strong> <span id="rsa-decrypted-key"></span></div>
-  </div>
 
-  <!-- Decryption with Frequency Analysis -->
-  <div class="card">
-    <h2>4. Decryption with Frequency Analysis</h2>
-    <p>Try to decode the message by analyzing the language's alphabet distribution. Candidate plaintexts are scored by MSE against English letter frequencies; the lowest MSE is the best guess.</p>
-    <div class="section-buttons">
-      <button id="btn-decrypt-freq" class="blue">Frequency Analysis Attack</button>
+    <div class="card">
+        <h2>3. Decryption & Language Estimation</h2>
+        <div style="margin-bottom:12px;">
+            <button id="btn-decrypt-key" style="background-color:#7dd3fc; color:#000;">Decrypt with Private Key</button>
+            <button id="btn-decrypt-freq" style="background-color:#7dd3fc; color:#000;">Decrypt & Estimate Language</button>
+        </div>
+        <div id="decryption-output">
+            <h4>Decrypted Text (Private Key):</h4>
+            <textarea id="decrypted-key" rows="3" readonly></textarea>
+
+            <h4>Decrypted Text with Estimated Language</h4>
+            <div>Detected Language: <span id="estimated-lang">-</span></div>
+            <textarea id="decrypted-lang" rows="4" readonly></textarea>
+        </div>
     </div>
-    <div class="result-box"><strong>Decrypted text:</strong> <span id="rsa-decrypted-freq"></span></div>
-    <div id="freq-bars"></div>
-    <div id="lang-result"></div>
-  </div>
 
+    <div class="card">
+        <h2>4. Letter Frequency Distribution</h2>
+        <div id="freq-bars"></div>
+    </div>
 </div>
 
 <script>
-  // Utilities
-  function gcd(a,b){ return b===0?a:gcd(b,a%b); }
-  function modInverse(e, phi){
-    let [old_r,r]=[phi,e]; let [old_s,s]=[0,1];
-    while(r!==0){ const q=Math.floor(old_r/r); [old_r,r]=[r,old_r-q*r]; [old_s,s]=[s,old_s-q*s]; }
-    if(old_r!==1) return null; return (old_s+phi)%phi;
-  }
-  function modPow(base, exp, mod){
-    let result=1n; base=BigInt(base)%BigInt(mod); exp=BigInt(exp); mod=BigInt(mod);
-    while(exp>0n){ if(exp%2n===1n) result=(result*base)%mod; base=(base*base)%mod; exp>>=1n;}
-    return result;
-  }
-
-  let n, phi, e, d;
-
-  document.getElementById('btn-generate-keys').onclick = ()=>{
-    const p=parseInt(document.getElementById('p-val').value);
-    const q=parseInt(document.getElementById('q-val').value);
-    e=parseInt(document.getElementById('e-val').value);
-    n=p*q; phi=(p-1)*(q-1);
-    if(gcd(e,phi)!==1){ alert('e not coprime with φ(n)'); return;}
-    d=modInverse(e,phi);
-    document.getElementById('key-display').innerHTML=`Public Key (e,n)=(${e},${n}) | Private Key (d,n)=(${d},${n})`;
-  };
-
-  function textToNums(text){ return text.toUpperCase().replace(/[^A-Z]/g,'').split('').map(c=>c.charCodeAt(0)-65);}
-  function numsToText(nums){ return nums.map(n=>String.fromCharCode((n%26)+65)).join(''); }
-
-  // Encrypt
-  document.getElementById('btn-encrypt').onclick=()=>{
-    if(!n||!e){ alert('Generate keys first'); return; }
-    const nums=textToNums(document.getElementById('rsa-input').value);
-    const encrypted=nums.map(num=>modPow(num,e,n).toString());
-    document.getElementById('rsa-output').textContent=encrypted.join(' ');
-  };
-
-  // Decrypt with private key
-  document.getElementById('btn-decrypt-key').onclick=()=>{
-    if(!n||!d){ alert('Generate keys first'); return; }
-    const encText=document.getElementById('rsa-output').textContent.trim();
-    if(!encText){ alert('Encrypt text first'); return; }
-    const enc=encText.split(/\s+/).map(BigInt);
-    const decNums=enc.map(c=>Number(modPow(c,BigInt(d),BigInt(n))));
-    const decText=numsToText(decNums);
-    document.getElementById('rsa-decrypted-key').textContent=decText;
-  };
-
-  // Decrypt with frequency analysis
-  document.getElementById('btn-decrypt-freq').onclick=()=>{
-    const encText=document.getElementById('rsa-output').textContent.trim();
-    if(!encText){ alert('Encrypt text first'); return; }
-    const enc=encText.split(/\s+/).map(BigInt);
-
-    const candidates=[];
-    for(let trialD=1; trialD<=phi; trialD++){
-      const decNums=enc.map(c=>Number(modPow(c,BigInt(trialD),BigInt(n))));
-      if(decNums.every(n=>n>=0 && n<26)){
-        candidates.push({text: numsToText(decNums), d: trialD});
-      }
+// RSA Functions
+function modPow(base, exp, mod){
+    let result=1n; base=BigInt(base)%BigInt(mod);
+    while(exp>0n){
+        if(exp%2n===1n) result=(result*base)%BigInt(mod);
+        base=(base*base)%BigInt(mod); exp=exp/2n;
+    } return result;
+}
+function modInv(a, m){
+    let m0=m,x0=0n,x1=1n; a=BigInt(a); m=BigInt(m);
+    if(m===1n) return 0n;
+    while(a>1n){
+        let q=a/m; [a,m]=[m,a%m]; [x0,x1]=[x1-q*x0,x0];
     }
-    if(candidates.length===0){ alert('No valid candidates found'); return; }
+    return x1<0n?x1+m0:x1;
+}
+function encryptRSA(text,e,n){ return text.split('').map(c=>modPow(c.charCodeAt(0),e,n).toString()).join(' '); }
+function decryptRSA(cipher,d,n){ return cipher.split(' ').map(c=>String.fromCharCode(Number(modPow(BigInt(c),d,n)))).join(''); }
 
-    const englishProfile={A:8.12,B:1.49,C:2.78,D:4.25,E:12.02,F:2.23,G:2.02,H:6.09,I:6.97,J:0.15,K:0.77,L:4.03,M:2.41,N:6.75,O:7.51,P:1.93,Q:0.1,R:5.99,S:6.33,T:9.06,U:2.76,V:0.98,W:2.36,X:0.15,Y:1.97,Z:0.07};
-    function freq(text){
-      const counts={}; for(let i=0;i<26;i++) counts[String.fromCharCode(65+i)]=0;
-      text.split('').forEach(c=>{ if(c>='A'&&c<='Z') counts[c]++; });
-      return counts;
+// Letter Frequency
+function countLetters(text){ const counts={}; for(let i=0;i<26;i++) counts[String.fromCharCode(65+i)]=0; text.toUpperCase().split('').forEach(c=>{if(c>='A'&&c<='Z') counts[c]++;}); return counts; }
+function renderBars(counts,container){ container.innerHTML=''; const max=Math.max(1,...Object.values(counts)); for(const[l,val]of Object.entries(counts)){ const row=document.createElement('div'); row.className='bar-row'; const lbl=document.createElement('div'); lbl.className='bar-label'; lbl.textContent=l; const wrap=document.createElement('div'); wrap.className='bar-wrap'; const fill=document.createElement('div'); fill.className='bar-fill'; fill.style.width=(val/max*100)+'%'; const valDiv=document.createElement('div'); valDiv.className='bar-value'; valDiv.textContent=val; wrap.appendChild(fill); row.appendChild(lbl); row.appendChild(wrap); row.appendChild(valDiv); container.appendChild(row); }}
+
+// Language Profiles
+const langProfiles = {
+    italian: {A:11.74,B:0.92,C:4.50,D:3.73,E:11.79,F:1.01,G:1.65,H:0.64,I:10.14,J:0.02,K:0.02,L:6.51,M:2.51,N:6.88,O:9.83,P:3.05,Q:0.51,R:6.37,S:4.98,T:5.62,U:3.01,V:2.10,W:0.02,X:0.02,Y:0.02,Z:1.18},
+    english: {A:8.12,B:1.49,C:2.78,D:4.25,E:12.02,F:2.23,G:2.02,H:6.09,I:6.97,J:0.15,K:0.77,L:4.03,M:2.41,N:6.75,O:7.51,P:1.93,Q:0.10,R:5.99,S:6.33,T:9.06,U:2.76,V:0.98,W:2.36,X:0.15,Y:1.97,Z:0.07}
+};
+
+function chiSquare(observed, profile){
+    const total=Object.values(observed).reduce((a,b)=>a+b,0);
+    let sum=0;
+    for(let i=0;i<26;i++){
+        const l=String.fromCharCode(65+i);
+        const expected=total*(profile[l]/100);
+        const obs=observed[l];
+        sum+=Math.pow(obs-expected,2)/expected;
     }
-    function mse(obs, profile){
-      const total=Object.values(obs).reduce((a,b)=>a+b,0);
-      let sum=0;
-      for(const l in obs){
-        const exp=total*(profile[l]||0)/100;
-        sum+=((obs[l]-exp)**2);
-      }
-      return sum/26;
+    return sum;
+}
+
+function estimateLanguage(text){
+    const counts=countLetters(text);
+    let bestLang='-'; let bestScore=Infinity;
+    for(const [lang,profile] of Object.entries(langProfiles)){
+        const score=chiSquare(counts,profile);
+        if(score<bestScore){ bestScore=score; bestLang=lang; }
     }
+    return bestLang;
+}
 
-    let bestCandidate=candidates[0];
-    let lowestMSE=mse(freq(bestCandidate.text),englishProfile);
-    candidates.forEach(c=>{
-      const score=mse(freq(c.text),englishProfile);
-      if(score<lowestMSE){ lowestMSE=score; bestCandidate=c; }
-    });
+// Event Handlers
+let n, phi, d;
+document.getElementById('btn-gen-keys').onclick=function(){
+    const p=BigInt(document.getElementById('rsa-p').value);
+    const q=BigInt(document.getElementById('rsa-q').value);
+    const e=BigInt(document.getElementById('rsa-e').value);
+    n=p*q; phi=(p-1n)*(q-1n); d=modInv(e,phi);
+    document.getElementById('rsa-keys').innerHTML=`n=${n} | φ(n)=${phi}<br>Public Key (e)=${e} | Private Key (d)=${d}`;
+};
 
-    document.getElementById('rsa-decrypted-freq').textContent=bestCandidate.text;
-    renderBars(freq(bestCandidate.text));
-    document.getElementById('lang-result').textContent="Detected language: English 🇺🇸 (by Frequency Analysis)";
-  };
+document.getElementById('btn-encrypt').onclick=function(){
+    if(!n||!d){alert('Generate keys first'); return;}
+    const e=BigInt(document.getElementById('rsa-e').value);
+    const text=document.getElementById('text-input').value;
+    const cipher=encryptRSA(text,e,n);
+    document.getElementById('cipher-output').value=cipher;
+    renderBars(countLetters(text),document.getElementById('freq-bars'));
+};
 
-  function renderBars(counts){
-    const container=document.getElementById('freq-bars'); container.innerHTML='';
-    const maxVal=Math.max(...Object.values(counts));
-    for(const [l,v] of Object.entries(counts)){
-      const row=document.createElement('div'); row.className='bar-group';
-      const label=document.createElement('div'); label.className='bar-label'; label.textContent=l;
-      const wrap=document.createElement('div'); wrap.className='bar-wrap';
-      const fill=document.createElement('div'); fill.className='bar-fill'; fill.style.width=`${v/maxVal*100}%`;
-      const value=document.createElement('div'); value.className='bar-value'; value.textContent=v;
-      wrap.appendChild(fill); wrap.appendChild(value); row.appendChild(label); row.appendChild(wrap); container.appendChild(row);
-    }
-  }
+document.getElementById('btn-decrypt-key').onclick=function(){
+    if(!d||!n){alert('Generate keys first'); return;}
+    const cipher=document.getElementById('cipher-output').value;
+    document.getElementById('decrypted-key').value=decryptRSA(cipher,d,n);
+};
+
+document.getElementById('btn-decrypt-freq').onclick=function(){
+    if(!d||!n){alert('Generate keys first'); return;}
+    const cipher=document.getElementById('cipher-output').value;
+    const decrypted=decryptRSA(cipher,d,n);
+    const lang=estimateLanguage(decrypted);
+    document.getElementById('decrypted-lang').value=decrypted;
+    document.getElementById('estimated-lang').textContent=lang;
+};
 </script>
 </body>
 </html>
