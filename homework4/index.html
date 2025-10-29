@@ -1,120 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Law of Large Numbers Simulation</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-body { font-family: Arial, sans-serif; background: #0f1724; color: #e6eef6; margin: 20px; }
-.card { background: #0b1220; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-input, button { margin: 4px 4px 12px 0; padding: 6px 8px; border-radius: 6px; border: none; font-family: inherit; }
-button { background: #7dd3fc; color: #000; font-weight: 700; cursor: pointer; }
-button:hover { filter: brightness(0.9); }
-#charts { display: flex; gap: 20px; flex-wrap: wrap; }
-canvas { background: rgba(255,255,255,0.05); border-radius: 12px; }
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LLN Simulation - Homework</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --accent: #7dd3fc;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: #e6eef6;
+      margin: 0;
+      padding: 20px;
+    }
+    .wrap { max-width: 1000px; margin: 0 auto; }
+    h1,h2,h3,h4 { color: var(--accent); margin-bottom: 10px; }
+    p { margin-bottom: 12px; }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.05) inset;
+    }
+
+    .plot-container { width: 100%; height: 400px; margin-top: 12px; }
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <header>
+      <h1>Simulation of the Law of Large Numbers (LLN)</h1>
+    </header>
 
-<div class="card">
-<h1>Law of Large Numbers Simulation</h1>
-<p>Simulate multiple trajectories of relative frequency f(n). As n grows, the empirical distribution converges to the true probability p.</p>
-<label>Number of trajectories (m): <input type="number" id="num-trajectories" value="50" min="1"></label>
-<label>Number of trials (n): <input type="number" id="num-trials" value="100" min="1"></label>
-<label>Probability of success (p): <input type="number" id="prob-success" value="0.5" min="0" max="1" step="0.01"></label>
-<button id="btn-simulate">Simulate LLN</button>
-</div>
+    <!-- Section 1: Trajectories -->
+    <div class="card">
+      <h2>Relative Frequency Trajectories</h2>
+      <p>Each line represents a simulated trajectory of the relative frequency <strong>f(n)</strong> over <strong>n</strong> trials. As predicted by the Law of Large Numbers, all trajectories tend to converge towards the theoretical probability <strong>p</strong>.</p>
+      <div id="lln-trajectories" class="plot-container"></div>
+    </div>
 
-<div id="charts">
-<canvas id="trajectoryChart" width="600" height="400"></canvas>
-<canvas id="histogramChart" width="300" height="400"></canvas>
-</div>
+    <!-- Section 2: Empirical Distribution -->
+    <div class="card">
+      <h2>Final Empirical Distribution</h2>
+      <p>Histogram of the final <strong>f(n)</strong> values across all <strong>m</strong> trajectories. As <strong>n</strong> increases, the distribution concentrates around <strong>p</strong>, demonstrating empirical convergence.</p>
+      <div id="lln-histogram" class="plot-container"></div>
+    </div>
+  </div>
 
-<script>
-function simulateLLN(m, n, p) {
+  <script>
+    // Simulation parameters
+    const m = 50;   // number of trajectories
+    const n = 1000; // trials per trajectory
+    const p = 0.5;  // success probability
+
     const trajectories = [];
     const finalFrequencies = [];
-    for(let i=0; i<m; i++){
-        const traj = [];
-        let successes = 0;
-        for(let j=1; j<=n; j++){
-            if(Math.random() < p) successes++;
-            traj.push(successes / j);
-        }
-        trajectories.push(traj);
-        finalFrequencies.push(traj[traj.length-1]);
+
+    for (let i = 0; i < m; i++) {
+      let successes = 0;
+      const freq = [];
+      for (let j = 1; j <= n; j++) {
+        if (Math.random() < p) successes++;
+        freq.push(successes / j);
+      }
+      trajectories.push({
+        x: Array.from({length: n}, (_, k) => k + 1),
+        y: freq,
+        mode: 'lines',
+        line: { width: 1, color: 'rgba(125,211,252,0.3)' },
+        showlegend: false
+      });
+      finalFrequencies.push(freq[n - 1]);
     }
-    return {trajectories, finalFrequencies};
-}
 
-function createTrajectoryChart(ctx, trajectories, n, p){
-    const datasets = trajectories.map(t => ({
-        data: t,
-        borderColor:'rgba(125,211,252,0.2)',
-        fill:false,
-        pointRadius:0,
-        tension:0.3
-    }));
-    datasets.push({
-        data: Array(n).fill(p),
-        borderColor:'rgba(255,99,132,0.9)',
-        borderWidth:2,
-        borderDash:[5,5],
-        fill:false,
-        pointRadius:0
+    // Plot LLN trajectories
+    Plotly.newPlot('lln-trajectories', trajectories, {
+      title: 'Relative Frequency f(n) Trajectories',
+      paper_bgcolor: '#0b1220',
+      plot_bgcolor: '#0b1220',
+      font: { color: '#e6eef6' },
+      xaxis: { title: 'Number of Trials (n)', color: '#e6eef6' },
+      yaxis: { title: 'Relative Frequency f(n)', range: [0, 1], color: '#e6eef6' },
+      margin: { t: 40 },
+      displayModeBar: false
     });
-    return new Chart(ctx, {
-        type: 'line',
-        data: { labels: Array.from({length:n},(_,i)=>i+1), datasets },
-        options:{
-            responsive:true,
-            plugins:{legend:{display:false}, title:{display:true, text:"Trajectories of f(n)"}},
-            scales:{
-                x:{title:{display:true, text:"Trial n"}},
-                y:{title:{display:true, text:"f(n)"}, min:0, max:1}
-            }
-        }
+
+    // Plot histogram of final frequencies
+    Plotly.newPlot('lln-histogram', [{
+      x: finalFrequencies,
+      type: 'histogram',
+      marker: { color: '#7dd3fc' },
+      nbinsx: 20
+    }], {
+      title: 'Empirical Distribution of Final f(n)',
+      paper_bgcolor: '#0b1220',
+      plot_bgcolor: '#0b1220',
+      font: { color: '#e6eef6' },
+      xaxis: { title: 'Final f(n)', color: '#e6eef6' },
+      yaxis: { title: 'Count', color: '#e6eef6' },
+      margin: { t: 40 },
+      displayModeBar: false
     });
-}
-
-function createHistogramChart(ctx, finalFrequencies){
-    const numBins = 20;
-    const bins = Array(numBins).fill(0);
-    finalFrequencies.forEach(f=>{
-        let idx = Math.floor(f*numBins);
-        if(idx >= numBins) idx = numBins-1;
-        bins[idx]++;
-    });
-    const labels = bins.map((_,i)=>(i/numBins).toFixed(2));
-
-    return new Chart(ctx,{
-        type:'bar',
-        data:{
-            labels,
-            datasets:[{
-                label:'Frequency',
-                data:bins,
-                backgroundColor:'rgba(125,211,252,0.7)',
-                borderColor:'rgba(125,211,252,1)',
-                borderWidth:1
-            }]
-        },
-        options:{
-            responsive:true,
-            plugins:{legend:{display:false}, title:{display:true, text:"Histogram of final f(n)"}},
-            scales:{
-                x:{title:{display:true, text:"f(n) bin start"}},
-                y:{title:{display:true, text:"Count"}, beginAtZero:true}
-            }
-        }
-    });
-}
-
-document.getElementById('btn-simulate').addEventListener('click',()=>{
-    const m = parseInt(document.getElementById('num-trajectories').value);
-    const n = parseInt(document.getElementById('num-trials').value);
-    const p = parseFloat(document.getElementById('prob-success').value);
-    if(m<=0 || n<=0 || p<0 || p>1) return alert('Invalid input');
-
-    const {trajectories, finalFrequencies} = sim
+  </script>
+</body>
+</html>
