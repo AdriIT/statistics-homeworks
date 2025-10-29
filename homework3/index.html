@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Homework 3 - RSA Cipher & Language Analysis</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #9aa6b2;
+      --accent: #7dd3fc;
+      --radius: 14px;
+      --bar-color: #7dd3fc;
+      --number-color: #ffffff;
+      --letter-color: #000000;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: #e6eef6;
+      margin: 0;
+      padding: 20px;
+    }
+    .wrap { max-width: 950px; margin: 0 auto; }
+    h1,h2,h3 { color: var(--accent); margin-bottom: 10px; }
+    p { color: #d5dde6; margin-bottom: 12px; }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.05) inset;
+    }
+    textarea {
+      width: 100%;
+      background: rgba(0,0,0,0.2);
+      color: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      resize: vertical;
+      font-size: 15px;
+      font-family: inherit;
+    }
+    button {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      margin-right: 8px;
+    }
+    button:hover { filter: brightness(0.9); }
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 4px 0;
+    }
+    .bar-label { width: 28px; text-align: center; color: #cfd7df; font-weight: 700; }
+    .bar-wrap { flex: 1; height: 18px; background: rgba(255,255,255,0.06); border-radius: 5px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--bar-color); }
+    .bar-value { width: 48px; text-align: right; color: var(--number-color); font-weight: 700; }
+    a.home-link {
+      display: inline-block;
+      margin-top: 30px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      background: rgba(255,255,255,0.05);
+      padding: 8px 14px;
+      border-radius: 10px;
+    }
+    a.home-link:hover { background: var(--accent); color: var(--card); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Homework 3 - RSA Cipher & Language-Based Decoding</h1>
+
+    <div class="card">
+      <h2>1. RSA Encryption Basics</h2>
+      <p>RSA is a public-key cryptosystem based on number theory. It uses two keys: a public key for encryption and a private key for decryption. It relies on the mathematical difficulty of factoring large numbers.</p>
+      <ul>
+        <li><strong>p</strong> and <strong>q</strong>: two prime numbers.</li>
+        <li><strong>n = p × q</strong>: the modulus.</li>
+        <li><strong>e</strong>: public exponent (coprime with φ(n)).</li>
+        <li><strong>d</strong>: private exponent (inverse of e mod φ(n)).</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>2. Interactive RSA Encryption / Decryption</h2>
+      <p>Use very small primes for demonstration purposes only.</p>
+
+      <label>Prime p: <input type="number" id="p-val" value="11"></label>
+      <label>Prime q: <input type="number" id="q-val" value="13"></label>
+      <label>Exponent e: <input type="number" id="e-val" value="7"></label>
+      <div style="margin-top:10px;"></div>
+      <textarea id="rsa-input" rows="3">HELLO WORLD</textarea>
+      <div style="margin-top:10px;">
+        <button id="btn-generate-keys">Generate Keys</button>
+        <button id="btn-encrypt-rsa">Encrypt</button>
+        <button id="btn-decrypt-rsa">Decrypt</button>
+      </div>
+      <p><strong>Public Key:</strong> <span id="pubkey"></span></p>
+      <p><strong>Private Key:</strong> <span id="privkey"></span></p>
+      <h4>Encrypted Message:</h4>
+      <textarea id="rsa-output" rows="3" readonly></textarea>
+      <h4>Decrypted Message:</h4>
+      <textarea id="rsa-decrypted" rows="3" readonly></textarea>
+    </div>
+
+    <div class="card">
+      <h2>3. Language Distribution Decoder</h2>
+      <p>This algorithm tries to identify whether the decrypted text matches the statistical letter distribution of a given language. For demonstration, we compare English and Italian frequency profiles.</p>
+      <button id="btn-analyze-lang">Analyze Language Distribution</button>
+      <div id="lang-result" style="margin-top:12px;"></div>
+      <div id="freq-bars" style="margin-top:12px;"></div>
+    </div>
+
+    <a class="home-link" href="index.html">← Back to Index</a>
+  </div>
+
+  <script>
+    /* Utility functions */
+    function gcd(a,b){ return b===0?a:gcd(b,a%b); }
+    function modInverse(e,phi){ for(let d=1;d<phi;d++){ if((d*e)%phi===1) return d; } return null; }
+
+    /* RSA Functions */
+    let n, phi, e, d;
+    document.getElementById('btn-generate-keys').onclick = () => {
+      const p = parseInt(document.getElementById('p-val').value);
+      const q = parseInt(document.getElementById('q-val').value);
+      e = parseInt(document.getElementById('e-val').value);
+      n = p*q;
+      phi = (p-1)*(q-1);
+      d = modInverse(e, phi);
+      document.getElementById('pubkey').textContent = `(${e}, ${n})`;
+      document.getElementById('privkey').textContent = `(${d}, ${n})`;
+    };
+
+    function modPow(base, exp, mod){
+      let res = 1n, b = BigInt(base), e = BigInt(exp), m = BigInt(mod);
+      while(e>0){
+        if(e%2n===1n) res = (res*b)%m;
+        b = (b*b)%m;
+        e >>= 1n;
+      }
+      return res;
+    }
+
+    function textToNums(text){
+      return text.toUpperCase().replace(/[^A-Z]/g,'').split('').map(ch => ch.charCodeAt(0)-65);
+    }
+
+    function numsToText(nums){
+      return nums.map(n => String.fromCharCode(n + 65)).join('');
+    }
+
+    document.getElementById('btn-encrypt-rsa').onclick = () => {
+      const nums = textToNums(document.getElementById('rsa-input').value);
+      const encrypted = nums.map(num => Number(modPow(BigInt(num), BigInt(e), BigInt(n))));
+      document.getElementById('rsa-output').value = encrypted.join(' ');
+    };
+
+    document.getElementById('btn-decrypt-rsa').onclick = () => {
+      const enc = document.getElementById('rsa-output').value.trim().split(/\s+/).map(Number);
+      const decrypted = enc.map(c => Number(modPow(BigInt(c), BigInt(d), BigInt(n))));
+      document.getElementById('rsa-decrypted').value = numsToText(decrypted);
+    };
+
+    /* Language profiles */
+    const langProfiles = {
+      english: {A:8.12,B:1.49,C:2.78,D:4.25,E:12.02,F:2.23,G:2.02,H:6.09,I:6.97,J:0.15,K:0.77,L:4.03,M:2.41,N:6.75,O:7.51,P:1.93,Q:0.10,R:5.99,S:6.33,T:9.06,U:2.76,V:0.98,W:2.36,X:0.15,Y:1.97,Z:0.07},
+      italian: {A:11.74,B:0.92,C:4.50,D:3.73,E:11.79,F:1.01,G:1.65,H:0.64,I:10.14,J:0.02,K:0.02,L:6.51,M:2.51,N:6.88,O:9.83,P:3.05,Q:0.51,R:6.37,S:4.98,T:5.62,U:3.01,V:2.10,W:0.02,X:0.02,Y:0.02,Z:1.18}
+    };
+
+    function countLetters(text){
+      const counts = {};
+      for(let i=0;i<26;i++) counts[String.fromCharCode(65+i)] = 0;
+      text.toUpperCase().split('').forEach(ch => { if(ch>='A' && ch<='Z') counts[ch]++; });
+      return counts;
+    }
+
+    function renderBars(counts, container){
+      container.innerHTML='';
+      const max = Math.max(1, ...Object.values(counts));
+      Object.entries(counts).forEach(([letter, val])=>{
+        const row = document.createElement('div');
+        row.className='bar-row';
+        const lbl=document.createElement('div'); lbl.className='bar-label'; lbl.textContent=letter;
+        const wrap=document.createElement('div'); wrap.className='bar-wrap';
+        const fill=document.createElement('div'); fill.className='bar-fill'; fill.style.width=(val/max*100)+'%';
+        const num=document.createElement('div'); num.className='bar-value'; num.textContent=val;
+        wrap.appendChild(fill);
+        row.appendChild(lbl);
+        row.appendChild(wrap);
+        row.appendChild(num);
+        container.appendChild(row);
+      });
+    }
+
+    function chiSquare(obs, expProfile){
+      const total = Object.values(obs).reduce((a,b)=>a+b,0);
+      let score=0;
+      for(let i=0;i<26;i++){
+        const L=String.fromCharCode(65+i);
+        const expected=total*(expProfile[L]||0.01)/100;
+        if(expected>0) score += Math.pow((obs[L]||0)-expected,2)/expected;
+      }
+      return score;
+    }
+
+    document.getElementById('btn-analyze-lang').onclick = ()=>{
+      const text = document.getElementById('rsa-decrypted').value || document.getElementById('rsa-input').value;
+      const counts = countLetters(text);
+      const englishScore = chiSquare(counts, langProfiles.english);
+      const italianScore = chiSquare(counts, langProfiles.italian);
+      const detected = englishScore < italianScore ? 'English 🇺🇸' : 'Italian 🇮🇹';
+      document.getElementById('lang-result').innerHTML = `<p><strong>Detected language:</strong> ${detected}</p>`;
+      renderBars(counts, document.getElementById('freq-bars'));
+    };
+  </script>
+</body>
+</html>
