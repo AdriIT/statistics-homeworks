@@ -1,0 +1,484 @@
+
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Measures of Location & Dispersion — Online Algorithms (Interactive)</title>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<style>
+:root{
+  --bg: #0f1724;
+  --card: #0b1220;
+  --muted: #9aa6b2;
+  --accent: #7dd3fc;
+  --radius: 12px;
+}
+*{box-sizing:border-box}
+body{
+  font-family: Inter, Roboto, Arial, sans-serif;
+  background:var(--bg);
+  color:#e6eef6;
+  margin:0;padding:20px;
+}
+.wrap{max-width:1100px;margin:0 auto;}
+.header {display:flex;gap:12px;align-items:center;justify-content:space-between;}
+h1{color:var(--accent);margin:0 0 6px 0;}
+.card{background:var(--card);border-radius:var(--radius);padding:18px;margin-bottom:18px;box-shadow:0 0 0 1px rgba(255,255,255,0.03) inset;}
+.small {color:var(--muted);font-size:0.95rem;}
+.controls {display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
+.controls label{font-size:0.9rem;color:#dbe9f4;}
+.controls input, .controls select {padding:6px;border-radius:8px;border:none;background:rgba(255,255,255,0.06);color:#fff;}
+button {background:var(--accent);color:#000;border:none;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer;}
+button:hover{filter:brightness(0.95)}
+.plot-row{display:flex;gap:16px;flex-wrap:wrap;}
+.plot{flex:1;min-width:320px;background:transparent;border-radius:10px;padding:6px;}
+.note{color:var(--muted);font-size:0.95rem}
+.code {background:rgba(255,255,255,0.03);padding:10px;border-radius:8px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;white-space:pre-wrap;color:#dbe9f4}
+.grid {display:grid;grid-template-columns: 1fr 1fr; gap:12px;}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.legend {display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px;}
+.legend .item{display:flex;gap:6px;align-items:center}
+.badge{width:14px;height:12px;border-radius:3px;display:inline-block}
+.result-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.result {background:rgba(255,255,255,0.03);padding:8px;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div>
+      <h1>Location & Dispersion — Theory, Derivations & Online Algorithms</h1>
+      <div class="small">Interactive lesson: measures of central tendency and spread, proofs for online recurrences, and stable streaming implementations.</div>
+    </div>
+
+  </div>
+
+  <!-- Theory -->
+  <div class="card" id="theory">
+    <h2>1. Measures of Location (Central Tendency)</h2>
+    <p class="note">Common measures of location summarize the "center" or typical value of a dataset.</p>
+    <ul>
+      <li><strong>Arithmetic mean (average)</strong>: sum of values divided by n. Sensitive to outliers, efficient for Gaussian-like data, optimal (minimum squared error) under squared loss.</li>
+      <li><strong>Median</strong>: the middle value (50th percentile). Robust to outliers and skew; used when distribution is asymmetric or contains extreme values.</li>
+      <li><strong>Mode</strong>: most frequent value(s). Useful for categorical data or multimodal distributions.</li>
+    </ul>
+
+    <h2 style="margin-top:12px">2. Measures of Dispersion (Spread)</h2>
+    <p class="note">Dispersion measures tell how spread out values are.</p>
+    <ul>
+      <li><strong>Variance</strong> (σ² or s²): mean squared deviation from the mean. Useful in theory; gives units squared.</li>
+      <li><strong>Standard deviation (SD)</strong> (σ or s): square root of variance, same units as data; widely used.</li>
+      <li><strong>Interquartile range (IQR)</strong>: difference between 75th and 25th percentiles; robust measure of spread.</li>
+      <li><strong>Range</strong>: max − min (very sensitive to outliers).</li>
+    </ul>
+
+    <h3 style="margin-top:12px">Uses, advantages and limitations (short)</h3>
+    <ul>
+      <li><strong>Mean + SD:</strong> ideal for symmetric, light-tailed distributions (Gaussian). Many statistical methods rely on them (t-tests, regression). Sensitive to outliers.</li>
+      <li><strong>Median + IQR:</strong> robust summary for skewed or contaminated data; used in boxplots and nonparametric stats.</li>
+      <li><strong>Mode:</strong> for categorical or multimodal data where "typical" value is frequency-based.</li>
+    </ul>
+  </div>
+
+  <!-- Derivations -->
+  <div class="card">
+    <h2>3. Derivations — recurrence formulas</h2>
+
+    <h3>Online arithmetic mean (derivation)</h3>
+    <div class="code">
+Let X₁, X₂, … be a stream. Let μₙ be the mean after n items:
+μₙ = (1/n) ∑_{i=1}^{n} Xᵢ
+
+Suppose we know μₙ₋₁ = (1/(n-1)) ∑_{i=1}^{n-1} Xᵢ.
+When the new value Xₙ arrives:
+
+μₙ = (1/n)( ∑_{i=1}^{n-1} Xᵢ + Xₙ )
+     = ((n-1)/n) μₙ₋₁ + (1/n) Xₙ
+Rewriting:
+μₙ = μₙ₋₁ + (Xₙ - μₙ₋₁) / n
+
+This recurrence updates the mean with one multiply/add per new sample.
+    </div>
+
+    <h3 style="margin-top:10px">Online variance (Welford's stable method — derivation sketch)</h3>
+    <div class="code">
+We want a recurrence for the (sample) variance without storing all data.
+
+Define:
+  μₙ : running mean after n points
+  M2ₙ : sum of squared deviations = ∑_{i=1}^{n} (Xᵢ - μₙ)² * n? (here we keep the "aggregate" M2 such that sample variance = M2/(n-1))
+
+Welford update when new X arrives:
+  delta = X - μₙ₋₁
+  μₙ = μₙ₋₁ + delta / n
+  M2ₙ = M2ₙ₋₁ + delta * (X - μₙ)
+
+Why this works (brief algebra):
+  M2ₙ = ∑ (Xᵢ - μₙ)²
+       = ∑ (Xᵢ - μₙ₋₁ + μₙ₋₁ - μₙ)²
+  After algebraic simplification, difference M2ₙ - M2ₙ₋₁ reduces to delta * (X - μₙ), which is numerically stable.
+
+Sample variance = M2ₙ / (n - 1)   (for n > 1)
+Population variance estimate = M2ₙ / n
+    </div>
+
+    <p class="note">Welford's recurrence avoids subtracting two large nearly equal sums (catastrophic cancellation) and is numerically robust.</p>
+  </div>
+
+  <!-- Implementation -->
+  <div class="card" id="implementation">
+    <h2>4. Interactive implementation & tests (online vs naive)</h2>
+    <p class="note">Choose a data generator, then stream values. The page computes:</p>
+    <ul>
+      <li><strong>Welford (stable)</strong> running mean & variance</li>
+      <li><strong>Naïve (sum, sumsq)</strong> incremental aggregator computing variance from sum and sum of squares — prone to cancellation</li>
+      <li><strong>Batch</strong> (ground truth computed from the full array) used for comparison</li>
+    </ul>
+
+    <div class="controls">
+      <label>Distribution:
+        <select id="dist">
+          <option value="normal">Normal(μ,σ)</option>
+          <option value="lognormal">Lognormal (skew)</option>
+          <option value="outliers">Normal + Outliers</option>
+          <option value="large">Large offset (1e12) + small noise</option>
+        </select>
+      </label>
+
+      <label>n (stream length): <input id="n-samples" type="number" value="2000" min="10" max="200000"/></label>
+      <label>μ: <input id="mu" type="number" value="0" step="0.1"/></label>
+      <label>σ: <input id="sigma" type="number" value="1" step="0.1"/></label>
+
+      <button id="btn-generate">Generate Data</button>
+      <button id="btn-start" disabled>Start streaming</button>
+      <button id="btn-step" disabled>Step</button>
+      <button id="btn-stop" disabled>Stop</button>
+      <button id="btn-reset" disabled>Reset</button>
+    </div>
+
+    <div class="legend">
+      <div class="item"><span class="badge" style="background:#7dd3fc"></span> Welford mean / variance</div>
+      <div class="item"><span class="badge" style="background:#ffd166"></span> Naïve (sum/sumsq)</div>
+      <div class="item"><span class="badge" style="background:#ff6b6b"></span> Batch (true)</div>
+    </div>
+
+    <div class="plot-row" style="margin-top:12px;">
+      <div class="plot" id="plot-mean" style="min-width:380px;height:340px"></div>
+      <div class="plot" id="plot-var" style="min-width:380px;height:340px"></div>
+    </div>
+
+    <div class="result-row">
+      <div class="result">
+        <div><strong>Streamed count:</strong> <span id="count">0</span></div>
+        <div><strong>Welford mean</strong> <span id="mw">-</span></div>
+        <div><strong>Naive mean</strong> <span id="mn">-</span></div>
+        <div><strong>Batch mean</strong> <span id="mb">-</span></div>
+      </div>
+      <div class="result">
+        <div><strong>Welford var (sample)</strong> <span id="vw">-</span></div>
+        <div><strong>Naive var (sample)</strong> <span id="vn">-</span></div>
+        <div><strong>Batch var (sample)</strong> <span id="vb">-</span></div>
+      </div>
+      <div class="result">
+        <div><strong>Max abs error (mean):</strong> <span id="err-mean">-</span></div>
+        <div><strong>Max abs error (var):</strong> <span id="err-var">-</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;">
+      <strong>Notes:</strong>
+      <div class="note">The naive aggregator stores <em>sum</em> and <em>sum of squares</em> and computes var = (sumsq - sum²/n)/(n-1). This can lose precision when sum²/n is close to sumsq.</div>
+    </div>
+  </div>
+
+  <!-- Derivation / Discussion optional -->
+  <div class="card">
+    <h2>5. Numerical Analysis & Practical Advantages</h2>
+    <p class="note">Key points:</p>
+    <ul>
+      <li><strong>Catastrophic cancellation:</strong> subtracting two large similar numbers (sumsq − sum²/n) loses significant digits; Welford avoids that by updating M2 directly.</li>
+      <li><strong>Overflow / scaling:</strong> naive sums can overflow for huge values; Welford keeps intermediate values near the data scale.</li>
+      <li><strong>Memory & streaming:</strong> online algorithms need O(1) memory and O(1) work per sample — ideal for large-scale or streaming data.</li>
+      <li><strong>Robustness & reproducibility:</strong> Welford is more robust; batch algorithms are fine if data fits memory and double precision is sufficient.</li>
+      <li><strong>Complex measures:</strong> median / IQR require data structure (heaps) or reservoir sampling for streaming; they are more expensive.</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+/* ---------- Data generation ---------- */
+function randNormal(mu=0, sigma=1){
+  // Box-Muller
+  let u=0,v=0;
+  while(u===0) u=Math.random();
+  while(v===0) v=Math.random();
+  const z = Math.sqrt(-2*Math.log(u)) * Math.cos(2*Math.PI*v);
+  return mu + sigma*z;
+}
+function randLogNormal(mu=0,sigma=1){
+  return Math.exp(randNormal(mu,sigma));
+}
+
+/* ---------- Online aggregators ---------- */
+class Welford {
+  constructor(){
+    this.n = 0;
+    this.mean = 0;
+    this.M2 = 0;
+  }
+  update(x){
+    this.n += 1;
+    const delta = x - this.mean;
+    this.mean += delta / this.n;
+    const delta2 = x - this.mean;
+    this.M2 += delta * delta2;
+  }
+  varianceSample(){
+    return this.n > 1 ? this.M2 / (this.n - 1) : NaN;
+  }
+  reset(){ this.n=0; this.mean=0; this.M2=0; }
+}
+
+class Naive {
+  // sum and sumsq incremental
+  constructor(){
+    this.n = 0;
+    this.sum = 0;
+    this.sumsq = 0;
+  }
+  update(x){
+    this.n += 1;
+    this.sum += x;
+    this.sumsq += x*x;
+  }
+  mean(){ return this.n>0 ? this.sum / this.n : NaN; }
+  varianceSample(){
+    if(this.n <= 1) return NaN;
+    const numer = this.sumsq - (this.sum * this.sum) / this.n;
+    return numer / (this.n - 1);
+  }
+  reset(){ this.n=0; this.sum=0; this.sumsq=0; }
+}
+
+/* ---------- plotting helpers (Plotly) ---------- */
+function newEmptyPlot(containerId, layout){
+  const el = document.getElementById(containerId);
+  Plotly.purge(el);
+  Plotly.newPlot(el, [], layout || {margin:{t:30},displayModeBar:false});
+}
+
+/* initialize empty plots */
+const meanLayout = {
+  title:'Running Mean (Welford vs Naive vs Batch)',
+  paper_bgcolor:'#0b1220', plot_bgcolor:'#0b1220',
+  font:{color:'#e6eef6'},
+  xaxis:{title:'sample index',color:'#e6eef6'},
+  yaxis:{title:'mean',color:'#e6eef6'},
+  margin:{t:40},
+  displayModeBar:false
+};
+const varLayout = {
+  title:'Running Sample Variance (Welford vs Naive vs Batch)',
+  paper_bgcolor:'#0b1220', plot_bgcolor:'#0b1220',
+  font:{color:'#e6eef6'},
+  xaxis:{title:'sample index',color:'#e6eef6'},
+  yaxis:{title:'variance',type:'linear',color:'#e6eef6'},
+  margin:{t:40},
+  displayModeBar:false
+};
+newEmptyPlot('plot-mean', meanLayout);
+newEmptyPlot('plot-var', varLayout);
+
+/* ---------- Controls & streaming ---------- */
+let dataArray = [];
+let streamIndex = 0;
+let timer = null;
+let welford = new Welford();
+let naive = new Naive();
+
+const btnGenerate = document.getElementById('btn-generate');
+const btnStart = document.getElementById('btn-start');
+const btnStep = document.getElementById('btn-step');
+const btnStop = document.getElementById('btn-stop');
+const btnReset = document.getElementById('btn-reset');
+
+btnGenerate.addEventListener('click', generateData);
+btnStart.addEventListener('click', startStream);
+btnStep.addEventListener('click', stepStream);
+btnStop.addEventListener('click', stopStream);
+btnReset.addEventListener('click', resetAll);
+
+function generateData(){
+  const dist = document.getElementById('dist').value;
+  const n = Math.max(1, Math.floor(Number(document.getElementById('n-samples').value)));
+  const mu = Number(document.getElementById('mu').value);
+  const sigma = Math.max(0.0000001, Number(document.getElementById('sigma').value));
+  dataArray = new Array(n);
+  if(dist === 'normal'){
+    for(let i=0;i<n;i++) dataArray[i] = randNormal(mu,sigma);
+  } else if(dist === 'lognormal'){
+    for(let i=0;i<n;i++) dataArray[i] = randLogNormal(mu,sigma);
+  } else if(dist === 'outliers'){
+    for(let i=0;i<n;i++){
+      let x = randNormal(mu,sigma);
+      if(Math.random() < 0.02) x += (Math.random()<0.5?1:-1) * 20 * sigma; // occasional big outlier
+      dataArray[i] = x;
+    }
+  } else if(dist === 'large'){
+    for(let i=0;i<n;i++){
+      dataArray[i] = 1e12 + randNormal(mu,sigma); // big base value + small noise
+    }
+  }
+  // enable streaming buttons
+  streamIndex = 0;
+  welford.reset(); naive.reset();
+  document.getElementById('count').textContent = '0';
+  document.getElementById('mw').textContent = '-'; document.getElementById('mn').textContent='-'; document.getElementById('mb').textContent='-';
+  document.getElementById('vw').textContent = '-'; document.getElementById('vn').textContent='-'; document.getElementById('vb').textContent='-';
+  btnStart.disabled = false; btnStep.disabled = false; btnReset.disabled = false;
+  btnStop.disabled = true;
+  // Reset plots
+  Plotly.purge('plot-mean'); Plotly.purge('plot-var');
+  Plotly.newPlot('plot-mean', [], meanLayout);
+  Plotly.newPlot('plot-var', [], varLayout);
+  // optionally show some summary
+  alert('Data generated: n=' + dataArray.length + ', distribution=' + dist);
+}
+
+/* update displays and plots after each new sample */
+let xIndexes = [];
+let arrWMean = [], arrNMean = [], arrBMean = [];
+let arrWVar = [], arrNVar = [], arrBVar = [];
+function pushUpdate(x){
+  // update aggregators
+  welford.update(x);
+  naive.update(x);
+
+  streamIndex++;
+  xIndexes.push(streamIndex);
+
+  // compute batch so far for reference
+  const seen = dataArray.slice(0, streamIndex);
+  const batchMean = meanBatch(seen);
+  const batchVarSample = varianceSampleBatch(seen);
+
+  arrWMean.push(welford.mean);
+  arrNMean.push(naive.mean());
+  arrBMean.push(batchMean);
+
+  arrWVar.push(welford.varianceSample());
+  arrNVar.push(naive.varianceSample());
+  arrBVar.push(batchVarSample);
+
+  // update plots occasionally for performance
+  if(streamIndex % Math.max(1, Math.floor(dataArray.length / 500)) === 0 || streamIndex < 50 || streamIndex === dataArray.length){
+    updatePlots();
+  }
+
+  // update numeric displays
+  document.getElementById('count').textContent = streamIndex.toString();
+  document.getElementById('mw').textContent = NumberToStr(welford.mean);
+  document.getElementById('mn').textContent = NumberToStr(naive.mean());
+  document.getElementById('mb').textContent = NumberToStr(batchMean);
+
+  document.getElementById('vw').textContent = NumberToStr(welford.varianceSample());
+  document.getElementById('vn').textContent = NumberToStr(naive.varianceSample());
+  document.getElementById('vb').textContent = NumberToStr(batchVarSample);
+
+  // show current errors
+  const errMean = Math.abs(welford.mean - batchMean);
+  const errVar = Math.abs((isNaN(welford.varianceSample())?0:welford.varianceSample()) - (isNaN(batchVarSample)?0:batchVarSample));
+  const currErrMean = Math.max(Number(document.getElementById('err-mean').textContent || 0), errMean);
+  const currErrVar = Math.max(Number(document.getElementById('err-var').textContent || 0), errVar);
+  document.getElementById('err-mean').textContent = currErrMean.toExponential(3);
+  document.getElementById('err-var').textContent = currErrVar.toExponential(3);
+}
+
+/* helper formatting */
+function NumberToStr(x){
+  if(isNaN(x)) return '-';
+  if(Math.abs(x) > 1e6 || Math.abs(x) < 1e-6) return x.toExponential(6);
+  return Number(x.toFixed(6)).toString();
+}
+
+/* batch (ground truth) helpers */
+function meanBatch(arr){
+  if(arr.length===0) return NaN;
+  let s=0;
+  for(let v of arr) s+=v;
+  return s / arr.length;
+}
+function varianceSampleBatch(arr){
+  const n = arr.length;
+  if(n<=1) return NaN;
+  const m = meanBatch(arr);
+  let s=0;
+  for(let v of arr) {
+    const d = v - m;
+    s += d*d;
+  }
+  return s / (n - 1);
+}
+
+/* update Plotly charts */
+function updatePlots(){
+  const traceWMean = {x:xIndexes, y:arrWMean, mode:'lines', line:{color:'#7dd3fc'}, name:'Welford'};
+  const traceNMean = {x:xIndexes, y:arrNMean, mode:'lines', line:{color:'#ffd166'}, name:'Naive'};
+  const traceBMean = {x:xIndexes, y:arrBMean, mode:'lines', line:{color:'#ff6b6b',dash:'dash'}, name:'Batch'};
+
+  const traceWVar = {x:xIndexes, y:arrWVar, mode:'lines', line:{color:'#7dd3fc'}, name:'Welford'};
+  const traceNVar = {x:xIndexes, y:arrNVar, mode:'lines', line:{color:'#ffd166'}, name:'Naive'};
+  const traceBVar = {x:xIndexes, y:arrBVar, mode:'lines', line:{color:'#ff6b6b',dash:'dash'}, name:'Batch'};
+
+  Plotly.react('plot-mean', [traceWMean, traceNMean, traceBMean], meanLayout, {displayModeBar:false});
+  Plotly.react('plot-var', [traceWVar, traceNVar, traceBVar], varLayout, {displayModeBar:false});
+}
+
+/* streaming controls */
+function startStream(){
+  if(!dataArray || dataArray.length===0) { alert('Generate data first'); return; }
+  btnStart.disabled = true; btnStop.disabled = false; btnStep.disabled = false; btnGenerate.disabled = true;
+  timer = setInterval(()=> {
+    if(streamIndex >= dataArray.length){
+      stopStream();
+      return;
+    }
+    pushUpdate(dataArray[streamIndex]);
+  }, 5); // 5ms per sample (fast) - adjust for animation speed
+}
+
+function stepStream(){
+  if(!dataArray || dataArray.length===0) { alert('Generate data first'); return; }
+  if(streamIndex >= dataArray.length) return;
+  pushUpdate(dataArray[streamIndex]);
+}
+
+function stopStream(){
+  if(timer) { clearInterval(timer); timer = null; }
+  btnStart.disabled = false; btnStop.disabled = true; btnGenerate.disabled = false;
+}
+
+function resetAll(){
+  stopStream();
+  dataArray = [];
+  streamIndex = 0;
+  welford.reset(); naive.reset();
+  xIndexes = []; arrWMean=[]; arrNMean=[]; arrBMean=[]; arrWVar=[]; arrNVar=[]; arrBVar=[];
+  document.getElementById('count').textContent = '0';
+  document.getElementById('mw').textContent = '-'; document.getElementById('mn').textContent='-'; document.getElementById('mb').textContent='-';
+  document.getElementById('vw').textContent = '-'; document.getElementById('vn').textContent='-'; document.getElementById('vb').textContent='-';
+  document.getElementById('err-mean').textContent = '-'; document.getElementById('err-var').textContent = '-';
+  Plotly.purge('plot-mean'); Plotly.purge('plot-var');
+  newEmptyPlot('plot-mean', meanLayout);
+  newEmptyPlot('plot-var', varLayout);
+  btnStart.disabled = true; btnStep.disabled = true; btnStop.disabled = true; btnReset.disabled = true;
+  btnGenerate.disabled = false;
+}
+
+/* initialize UI state */
+resetAll();
+
+</script>
+</body>
+</html>
