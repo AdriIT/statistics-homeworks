@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Analytical Discussion - Random Walks, LLN & Combinatorics</title>
+<style>
+:root {
+  --bg: #0f1724;
+  --card: #0b1220;
+  --accent: #7dd3fc;
+  --muted: #9aa6b2;
+  --radius: 14px;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: #e6eef6;
+  margin: 0; padding: 20px;
+}
+.wrap { max-width: 1000px; margin: auto; }
+h1, h2, h3 { color: var(--accent); }
+p { color: #d8e2ee; line-height: 1.6; }
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.05) inset;
+}
+ul { color: #d8e2ee; }
+.home-btn {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.home-btn:hover {
+  background: var(--accent);
+  color: #000;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>Discussion - Random Walks, LLN, and Combinatorial Structures</h1>
+    <button class="home-btn" onclick="window.location.href='index.html'">🏠 Home</button>
+  </div>
+
+  <div class="card">
+    <h2>1. Conceptual Analogy Between the Two Homeworks</h2>
+    <p>
+      The <strong>Law of Large Numbers (LLN)</strong> and the <strong>Random Walk / Binomial Simulation</strong> 
+      are deeply related. Both rely on the <strong>Bernoulli process</strong> - a sequence of independent trials, 
+      each with two possible outcomes (success/failure or +1/-1). 
+    </p>
+    <p>
+      In the LLN simulation, the focus was on how the <em>relative frequency</em> of successes 
+      stabilizes around the true probability <strong>p</strong> as the number of trials <strong>n</strong> increases.  
+      In contrast, the Random Walk simulation emphasizes how the <em>cumulative sum</em> of ±1 outcomes 
+      evolves over time and how its final distribution converges to the <strong>Binomial</strong> (or Normal) distribution. 
+    </p>
+    <p>
+      Both demonstrate <strong>statistical convergence</strong> and <strong>probabilistic stability</strong>:  
+      one in relative frequencies, the other in cumulative deviations.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>2. Mathematical Structure: Binomial Coefficients and Pascal’s Triangle</h2>
+    <p>
+      Each step in the random walk corresponds to a Bernoulli trial. After <strong>n</strong> steps, 
+      the number of distinct paths that end at a particular total score is determined by the number of ways 
+      to choose <em>k</em> “up” steps out of <em>n</em> trials, given by the 
+      <strong>binomial coefficient</strong>:
+    </p>
+    <p style="text-align:center; font-style:italic;">
+      C(n, k) = n! / [k! (n - k)!]
+    </p>
+    <p>
+      These coefficients form the entries of <strong>Pascal’s Triangle</strong>, which visually encodes 
+      all possible random walk outcomes and their respective multiplicities. Each row corresponds to 
+      an increasing number of steps, while each element gives the number of paths leading to a given endpoint.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>3. Binomial Expansion and Probability Distributions</h2>
+    <p>
+      The <strong>Binomial Theorem</strong> connects directly to the probabilistic structure:
+    </p>
+    <p style="text-align:center; font-style:italic;">
+      (p + q)<sup>n</sup> = Σ<sub>k=0</sub><sup>n</sup> C(n, k) p<sup>k</sup> q<sup>n−k</sup>
+    </p>
+    <p>
+      Here, each term represents the probability of observing exactly <em>k</em> successes 
+      (or equivalently, a random walk ending at a specific position).  
+      The <strong>Binomial distribution</strong> thus emerges as the discrete analog of the random walk’s final-state distribution.
+    </p>
+    <p>
+      As <em>n</em> grows large and <em>p = 0.5</em>, the distribution becomes symmetric 
+      and approximates a <strong>Normal (Gaussian)</strong> curve, illustrating the 
+      <strong>Central Limit Theorem</strong> in action.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>4. Fibonacci Sequence and Combinatorial Relationships</h2>
+    <p>
+      Surprisingly, connections also exist between <strong>binomial coefficients</strong> and 
+      the <strong>Fibonacci sequence</strong>. Each Fibonacci number can be expressed as a sum 
+      of binomial coefficients along “shallow diagonals” of Pascal’s Triangle:
+    </p>
+    <p style="text-align:center; font-style:italic;">
+      F<sub>n</sub> = Σ<sub>k=0</sub><sup>⌊(n−1)/2⌋</sup> C(n − 1 − k, k)
+    </p>
+    <p>
+      This shows that recursive patterns like Fibonacci growth can be represented through 
+      combinatorial counting principles - the same foundation underlying random walks and Bernoulli processes.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>5. Comparative Summary</h2>
+    <ul>
+      <li><strong>LLN Simulation:</strong> Focuses on the convergence of empirical frequencies toward a constant probability p.</li>
+      <li><strong>Random Walk Simulation:</strong> Focuses on cumulative deviations and distributional convergence toward Binomial/Normal laws.</li>
+      <li><strong>Common Basis:</strong> Both stem from Bernoulli trials and share the same combinatorial backbone of binomial coefficients.</li>
+      <li><strong>Pascal’s Triangle:</strong> Encodes both the frequency structure of LLN and the path structure of random walks.</li>
+      <li><strong>Analytic Connection:</strong> Each outcome in both systems can be derived via combinatorial coefficients reflecting underlying symmetry and probability mass.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>6. Broader Mathematical Insight</h2>
+    <p>
+      These models collectively highlight the <strong>unity between combinatorics, probability, and statistics</strong>.  
+      The same algebraic structures - binomial coefficients, factorials, and polynomial expansions - 
+      describe frequency convergence, cumulative deviations, and stochastic paths alike.  
+      Whether in the realm of the LLN or random walks, the deep underlying order comes from the 
+      <strong>combinatorial symmetries</strong> of discrete probability.
+    </p>
+  </div>
+</div>
+</body>
+</html>
