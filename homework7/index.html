@@ -1,0 +1,204 @@
+Put your HTML text here<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Walk Simulation — Server Security & Binomial Convergence</title>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<style>
+:root {
+  --bg: #0f1724;
+  --card: #0b1220;
+  --accent: #7dd3fc;
+  --muted: #9aa6b2;
+  --radius: 14px;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: #e6eef6;
+  margin: 0; padding: 20px;
+}
+.wrap { max-width: 1000px; margin: auto; }
+h1, h2 { color: var(--accent); }
+p { color: #d8e2ee; line-height: 1.5; }
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.05) inset;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.controls input {
+  padding: 6px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+button {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:hover { filter: brightness(0.9); }
+#plot {
+  width: 100%;
+  height: 480px;
+}
+.home-btn {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.home-btn:hover {
+  background: var(--accent);
+  color: #000;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>Server Security Simulation — Random Walk & Binomial Convergence</h1>
+    <button class="home-btn" onclick="window.location.href='index.html'">🏠 Home</button>
+  </div>
+
+  <div class="card">
+    <p>
+      A server receives weekly security updates over <strong>n</strong> weeks. Each week, there are <strong>m</strong> independent attackers, 
+      each capable of breaching the system with probability <strong>p</strong>.
+    </p>
+    <p>
+      For each week, if the server remains secure, it earns a +1 score; if breached, it loses −1. 
+      The cumulative score evolves like a <strong>random walk</strong>. 
+      As <strong>n</strong> and <strong>m</strong> increase, the histogram of total scores 
+      approximates the <strong>binomial distribution</strong> centered around the expected value.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Simulation Controls</h2>
+    <div class="controls">
+      <label>Weeks (n): <input type="number" id="weeks" value="50" min="1"></label>
+      <label>Attackers (m): <input type="number" id="attackers" value="1000" min="1"></label>
+      <label>Breach Probability (p): <input type="number" id="prob" value="0.3" step="0.01" min="0" max="1"></label>
+      <button id="run">Run Simulation</button>
+    </div>
+    <div id="plot"></div>
+  </div>
+
+  <div class="card">
+    <h2>Discussion</h2>
+    <p>
+      Each trajectory represents one possible evolution of the system’s security status. 
+      The total score after <em>n</em> weeks can be viewed as a sum of +1/−1 outcomes, 
+      which parallels a <strong>random walk</strong> or a scaled <strong>binomial process</strong>.
+    </p>
+    <p>
+      As <em>m</em> (the number of trajectories) and <em>n</em> (the number of trials per trajectory) 
+      grow large, the empirical distribution of total scores converges to the theoretical 
+      binomial distribution <code>Binomial(n, 1−p)</code> scaled by ±1 steps.
+    </p>
+  </div>
+</div>
+
+<script>
+// Utility: factorial (for binomial pmf)
+function factorial(k) {
+  if (k === 0 || k === 1) return 1;
+  let res = 1;
+  for (let i = 2; i <= k; i++) res *= i;
+  return res;
+}
+function binomialPMF(n, k, p) {
+  return factorial(n) / (factorial(k) * factorial(n - k)) * Math.pow(1 - p, k) * Math.pow(p, n - k);
+}
+
+document.getElementById('run').addEventListener('click', () => {
+  const n = parseInt(document.getElementById('weeks').value);
+  const m = parseInt(document.getElementById('attackers').value);
+  const p = parseFloat(document.getElementById('prob').value);
+
+  const finalScores = [];
+
+  // Simulate m trajectories
+  for (let i = 0; i < m; i++) {
+    let total = 0;
+    for (let j = 0; j < n; j++) {
+      const breached = Math.random() < p;
+      total += breached ? -1 : +1;
+    }
+    finalScores.push(total);
+  }
+
+  // Prepare histogram data
+  const minScore = -n, maxScore = n;
+  const bins = [];
+  for (let s = minScore; s <= maxScore; s += 2) bins.push(s);
+
+  // Theoretical binomial (scaled)
+  const binomialX = [], binomialY = [];
+  for (let k = 0; k <= n; k++) {
+    const score = 2 * k - n; // convert successes to +1/-1 score
+    binomialX.push(score);
+    binomialY.push(binomialPMF(n, k, p));
+  }
+  // Normalize the theoretical distribution to match sample size
+  const scale = m / binomialY.reduce((a, b) => a + b, 0);
+  const scaledY = binomialY.map(v => v * scale);
+
+  const traceHist = {
+    x: finalScores,
+    type: 'histogram',
+    marker: { color: '#7dd3fc', opacity: 0.6 },
+    name: 'Empirical',
+    xbins: { start: minScore, end: maxScore, size: 2 }
+  };
+
+  const traceTheo = {
+    x: binomialX,
+    y: scaledY,
+    type: 'scatter',
+    mode: 'lines+markers',
+    line: { color: '#ffcc66', width: 2 },
+    name: 'Theoretical Binomial'
+  };
+
+  const layout = {
+    title: `Distribution of Final Scores (n=${n}, m=${m}, p=${p})`,
+    paper_bgcolor: '#0b1220',
+    plot_bgcolor: '#0b1220',
+    font: { color: '#e6eef6' },
+    xaxis: { title: 'Final Score', color: '#e6eef6' },
+    yaxis: { title: 'Count', color: '#e6eef6' },
+    barmode: 'overlay',
+    showlegend: true,
+    margin: { t: 50 },
+    displayModeBar: false
+  };
+
+  Plotly.newPlot('plot', [traceHist, traceTheo], layout, {displayModeBar: false});
+});
+</script>
+</body>
+</html>
